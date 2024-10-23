@@ -12,9 +12,9 @@
     close: closeSlot
   } = $props();
 
-  $: classes = classnames(klass, 'toast-header');
+  let classes = $derived(classnames(klass, 'toast-header'))
 
-  $: tagClassName = classnames('me-auto', { 'ms-2': icon !== null });
+  let tagClassName = $derived(classnames('me-auto', { 'ms-2': icon !== null }));
 </script>
 
 <div {...rest} class={classes}>

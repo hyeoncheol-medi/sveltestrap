@@ -18,8 +18,14 @@
     valid = false,
     value = undefined,
     label: labelSnippet,
+    blur,
+    change,
+    focus,
+    input,
     ...rest
   } = $props();
+
+
 
   let classes = $derived(classnames(className, 'form-check', {
     'form-check-reverse': reverse,
@@ -43,10 +49,10 @@
       type="radio"
       bind:group
       bind:this={inner}
-      onblur
-      onchange
-      onfocus
-      oninput
+      {blur}
+      {change}
+      {focus}
+      {input}
       {disabled}
       {name}
       {value}
@@ -59,10 +65,10 @@
       type="checkbox"
       bind:checked
       bind:this={inner}
-      onblur
-      onchange
-      onfocus
-      oninput
+      {blur}
+      {change}
+      {focus}
+      {input}
       {disabled}
       {name}
       {value}
@@ -75,10 +81,10 @@
       type="checkbox"
       bind:checked
       bind:this={inner}
-      onblur
-      onchange
-      onfocus
-      oninput
+      {blur}
+      {change}
+      {focus}
+      {input}
       {disabled}
       {name}
       {value}
