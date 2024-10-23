@@ -30,7 +30,7 @@
     container = undefined,
     fullscreen = false,
     header = undefined,
-    isOpen = $bindable(false),
+    isOpen = $bindable(),
     keyboard = true,
     backdrop = true,
     contentClassName = '',
