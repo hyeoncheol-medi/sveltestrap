@@ -12,20 +12,21 @@
     spacing = 'mb-3',
     tag = null,
     children,
-    labelContent
+    labelContent,
+    ...rest
   } = $props();
 
-  $: classes = classnames(klass, spacing, {
+  let classes = $derived(classnames(klass, spacing, {
     row,
     'form-check': check,
     'form-check-inline': check && inline,
     'form-floating': floating,
     disabled: check && disabled
-  });
+  }));
 </script>
 
 {#if tag === 'fieldset'}
-  <fieldset {...$$restProps} class={classes}>
+  <fieldset {...rest} class={classes}>
     {@render children?.()}
     {#if label || labelContent}
       <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -36,7 +37,7 @@
     {/if}
   </fieldset>
 {:else}
-  <div {...$$restProps} class={classes}>
+  <div {...rest} class={classes}>
     {@render children?.()}
     {#if label || labelContent}
       <!-- svelte-ignore a11y-label-has-associated-control -->

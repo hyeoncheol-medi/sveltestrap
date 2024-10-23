@@ -5,13 +5,13 @@
    * Additional CSS class names to apply
    * @type {string}
    */
-  
 
-  
 
-  
 
-  
+
+
+
+
 
   /**
    * @typedef {Object} Props
@@ -31,7 +31,6 @@
     closeAriaLabel = 'Close',
     id = undefined,
     children = undefined,
-    children,
     close,
     ...rest
   } = $props();

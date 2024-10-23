@@ -63,15 +63,15 @@
   });
 
   // Reactive classes calculation
-  $derived
-  classes = classnames(
+
+  let classes = $derived(() => classnames(
     className,
     hidden ? 'visually-hidden' : false,
     check ? 'form-check-label' : false,
     size ? `col-form-label-${size}` : false,
     colClasses,
     colClasses.length ? 'col-form-label' : 'form-label'
-  );
+  ))
 </script>
 
 <label {...rest} class={classes} for={fore}>

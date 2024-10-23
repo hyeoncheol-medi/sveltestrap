@@ -1,7 +1,7 @@
 <script>
   import { classnames } from '../utils';
 
-  
+
   /**
    * @typedef {Object} Props
    * @property {string} [class]
@@ -18,7 +18,6 @@
     children = undefined,
     closeAriaLabel = 'Close',
     toggle = undefined,
-    children,
     close,
     ...rest
   } = $props();

@@ -139,13 +139,13 @@
     )
   );
 
-  const outer = $derived(container === 'inline' ? InlineContainer : Portal);
+  const Container = $derived(container === 'inline' ? InlineContainer : Portal);
 </script>
 
 <svelte:window onmousedown={handleOutsideClick} />
 
 {#if isOpen}
-  <svelte:component this={outer}>
+  <Container>
     <div
       bind:this={popoverEl}
       {...restProps}
@@ -156,7 +156,11 @@
     >
       <div class="popover-arrow" data-popper-arrow />
       <h3 class="popover-header">
-        {@render titleContent?.() ?? title}
+        {#if titleContent}
+          {@render titleContent?.()}
+        {:else}
+          {title}
+        {/if}
       </h3>
       <div class="popover-body">
         {#if children}
@@ -166,5 +170,5 @@
         {/if}
       </div>
     </div>
-  </svelte:component>
+  </Container>
 {/if}

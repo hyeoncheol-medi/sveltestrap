@@ -6,11 +6,11 @@
    * @type {string}
    * @default ''
    */
-  
 
-  
 
-  
+
+
+
   /**
    * @typedef {Object} Props
    * @property {string} [class]
@@ -24,7 +24,6 @@
     class: className = '',
     active = false,
     children = '',
-    children,
     ...rest
   } = $props();
 

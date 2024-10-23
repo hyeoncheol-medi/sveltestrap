@@ -17,7 +17,7 @@
   $: tagClassName = classnames('me-auto', { 'ms-2': icon !== null });
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   {#if icon}
     <svg
       class={`rounded text-${icon}`}
@@ -37,12 +37,14 @@
     {@render children?.()}
   </strong>
   {#if toggle}
-    {@render closeSlot?.() || (
+    {#if closeSlot}
+      {@render closeSlot?.()}
+    {:else}
       <Button
         close
         onclick={toggle}
         aria-label={closeAriaLabel}
       />
-    )}
+    {/if}
   {/if}
 </div>

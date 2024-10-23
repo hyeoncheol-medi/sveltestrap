@@ -11,17 +11,17 @@
 {#if colgroup}
   <col style="width: {width};" />
 {:else if foot}
-  <th {...$$restProps}>
+  <th {...rest}>
     {#if footer}{footer}{/if}
     {@render footerContent?.()}
   </th>
 {:else if head}
-  <th {...$$restProps}>
+  <th {...rest}>
     {#if header}{header}{/if}
     {@render headerContent?.()}
   </th>
 {:else}
-  <td class={className} {...$$restProps}>
+  <td class={className} {...rest}>
     {@render children?.()}
   </td>
 {/if}

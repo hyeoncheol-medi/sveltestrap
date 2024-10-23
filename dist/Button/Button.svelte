@@ -2,7 +2,7 @@
   import { classnames } from '../utils';
 
   let {
-    class: className = '',
+    class: klass = '',  // className renamed to klass
     active = false,
     block = false,
     children = '',
@@ -17,55 +17,52 @@
     ...rest
   } = $props();
 
-  $: classes = classnames(
-    className,
-    close ? 'btn-close' : 'btn',
-    close || `btn${outline ? '-outline' : ''}-${color}`,
-    size ? `btn-${size}` : false,
-    block ? 'd-block w-100' : false,
-    {
-      active
-    }
+  const ariaLabel = $derived(rest['aria-label']);
+
+  const classes = $derived(
+    classnames(
+      klass,
+      close ? 'btn-close' : 'btn',
+      close || `btn${outline ? '-outline' : ''}-${color}`,
+      size ? `btn-${size}` : false,
+      block ? 'd-block w-100' : false,
+      {
+        active
+      }
+    )
   );
 
-  $: ariaLabel = rest['aria-label'];
-  $: defaultAriaLabel = close ? 'Close' : null;
+  const defaultAriaLabel = $derived(close ? 'Close' : null);
 </script>
 
 {#if href}
-<a
+  <a
     {...rest}
     class={classes}
     class:disabled
     bind:this={inner}
-    {href}
-    onclick
-    onfocus
-    onblur
+    href={href}
     aria-label={ariaLabel || defaultAriaLabel}
   >
     {#if children}
       {children}
     {:else}
-      {@render rest.children?.()}
+      {@render children?.()}
     {/if}
   </a>
 {:else}
   <button
     {...rest}
     class={classes}
-    {disabled}
+    disabled={disabled}
     bind:this={inner}
-    {value}
-    onclick
-    onfocus
-    onblur
+    value={value}
     aria-label={ariaLabel || defaultAriaLabel}
   >
     {#if children}
       {children}
     {:else}
-      {@render rest.children?.()}
+      {@render children?.()}
     {/if}
   </button>
 {/if}

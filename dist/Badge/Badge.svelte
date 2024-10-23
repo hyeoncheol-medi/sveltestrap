@@ -1,34 +1,34 @@
 <script>
   import { classnames } from '../utils';
 
-  
 
-  
+
+
 
   /**
    * Additional CSS classes for container element.
    * @type {string}
    * @default ''
    */
-  
 
-  
 
-  
 
-  
 
-  
 
-  
 
-  
 
-  
 
-  
 
-  
+
+
+
+
+
+
+
+
+
+
   /**
    * @typedef {Object} Props
    * @property {string} [ariaLabel] - Text to be read by screen readers.
@@ -60,7 +60,6 @@
     placement = 'top-0 start-100',
     shadow = false,
     theme = undefined,
-    children,
     ...rest
   } = $props();
 

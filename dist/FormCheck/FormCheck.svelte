@@ -88,7 +88,11 @@
   {/if}
   {#if label}
     <label class="form-check-label" for={idFor}>
-      {@render labelSnippet?.(label) ?? label}
+      {#if labelSnippet}
+        {@render labelSnippet()}
+      {:else}
+        {label}
+      {/if}
     </label>
   {/if}
 </div>

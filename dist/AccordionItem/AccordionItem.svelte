@@ -2,6 +2,7 @@
   import { AccordionHeader } from '../AccordionHeader';
   import { Collapse } from '../Collapse';
   import { classnames } from '../utils';
+  import { getContext } from 'svelte';
 
   let {
     class: klass = '',
@@ -43,7 +44,11 @@
     onclick={onToggle}
     class={!isOpen && 'collapsed'}
   >
-    {@render headerContent?.() ?? header}
+    {#if headerContent}
+      {@render headerContent?.()}
+    {:else}
+      {header}
+    {/if}
   </AccordionHeader>
   <Collapse
     isOpen={isOpen}

@@ -47,7 +47,7 @@
     </NavLink>
   </NavItem>
 {:else}
-  <div {...$$restProps} class={classes}>
+  <div {...rest} class={classes}>
     {@render children?.()}
   </div>
 {/if}

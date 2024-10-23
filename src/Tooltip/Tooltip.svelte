@@ -11,24 +11,24 @@
    * Additional CSS class names for the tooltip.
    * @type {string}
    */
-  
 
-  
 
-  
 
-  
-  
 
-  
 
-  
 
-  
 
-  
 
-  
+
+
+
+
+
+
+
+
+
+
   /**
    * @typedef {Object} Props
    * @property {string} [class]
@@ -56,7 +56,6 @@
     target = '',
     theme = null,
     delay = 0,
-    children,
     ...rest
   } = $props();
 

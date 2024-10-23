@@ -20,12 +20,19 @@
   } = $props();
 
   // Reactive state
-  $: showClose = dismissible || toggle;
-  $: handleToggle = toggle || (() => (isOpen = false));
-  $: classes = classnames(className, 'alert', `alert-${color}`, {
-    'alert-dismissible': showClose
-  });
-  $: closeClassNames = classnames('btn-close', closeClassName);
+  const showClose = $derived(dismissible || toggle);
+
+  const handleToggle = $derived(toggle || (() => (isOpen = false)));
+
+  const classes = $derived(
+    classnames(className, 'alert', `alert-${color}`, {
+      'alert-dismissible': showClose
+    })
+  );
+
+  const closeClassNames = $derived(
+    classnames('btn-close', closeClassName)
+  );
 </script>
 
 {#if isOpen}

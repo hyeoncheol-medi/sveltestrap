@@ -63,17 +63,17 @@
   let _removeEscListener = $state(null);
 
   // Computed values
-  $derived.dialogBaseClass = 'modal-dialog';
+  const dialogBaseClass = 'modal-dialog';
 
-  $derived.classes = classnames(dialogBaseClass, className, {
+  let classes = $derived(() => classnames(dialogBaseClass, className, {
     [`modal-${size}`]: size,
     'modal-fullscreen': fullscreen === true,
     [`modal-fullscreen-${fullscreen}-down`]: fullscreen && typeof fullscreen === 'string',
     [`${dialogBaseClass}-centered`]: centered,
     [`${dialogBaseClass}-scrollable`]: scrollable
-  });
+  }))
 
-  $derived.outer = container === 'inline' || staticModal ? InlineContainer : Portal;
+  let outer = $derived(() => container === 'inline' || staticModal ? InlineContainer : Portal)
 
 
   // Mount 효과
@@ -206,23 +206,12 @@
     _mouseDownElement = e.target;
   }
 
-  const dialogBaseClass = 'modal-dialog';
-
-  $: classes = classnames(dialogBaseClass, className, {
-    [`modal-${size}`]: size,
-    'modal-fullscreen': fullscreen === true,
-    [`modal-fullscreen-${fullscreen}-down`]: fullscreen && typeof fullscreen === 'string',
-    [`${dialogBaseClass}-centered`]: centered,
-    [`${dialogBaseClass}-scrollable`]: scrollable
-  });
-
-  $: outer = container === 'inline' || staticModal ? InlineContainer : Portal;
 </script>
 
 {#if _isMounted}
   <svelte:component this={outer}>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class={wrapClassName} tabindex="-1" {...$$restProps} data-bs-theme={theme}>
+    <div class={wrapClassName} tabindex="-1" {...rest} data-bs-theme={theme}>
       {#if isOpen}
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <div
