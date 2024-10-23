@@ -23,7 +23,6 @@
 
 # generated
 /node_modules
-/dist
 /docs
 package-lock.json
 
