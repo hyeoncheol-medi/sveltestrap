@@ -7,15 +7,15 @@
    * @type {string}
    * @default ''
    */
-  
 
-  
 
-  
 
-  
 
-  
+
+
+
+
+
   /**
    * @typedef {Object} Props
    * @property {string} [class]
@@ -33,7 +33,6 @@
     divider = '',
     listClassName = '',
     style = '',
-    children,
     ...rest
   } = $props();
 

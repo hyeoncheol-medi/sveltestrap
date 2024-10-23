@@ -14,6 +14,7 @@
     lg = '',
     xl = '',
     xxl = '',
+    children = undefined,
     ...rest
   } = $props();
 
@@ -64,7 +65,7 @@
 
   // Reactive classes calculation
 
-  let classes = $derived(() => classnames(
+  let classes = $derived(classnames(
     className,
     hidden ? 'visually-hidden' : false,
     check ? 'form-check-label' : false,
@@ -75,5 +76,5 @@
 </script>
 
 <label {...rest} class={classes} for={fore}>
-  <slot />
+  {@render children?.()}
 </label>

@@ -12,7 +12,7 @@
     captionSnippet
   } = $props();
 
-  let classes = $derived(() => classnames('figure', klass));
+  let classes = $derived(classnames('figure', klass));
 </script>
 
 <img {alt} class={classes} />

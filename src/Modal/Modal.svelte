@@ -65,7 +65,7 @@
   // Computed values
   const dialogBaseClass = 'modal-dialog';
 
-  let classes = $derived(() => classnames(dialogBaseClass, className, {
+  let classes = $derived(classnames(dialogBaseClass, className, {
     [`modal-${size}`]: size,
     'modal-fullscreen': fullscreen === true,
     [`modal-fullscreen-${fullscreen}-down`]: fullscreen && typeof fullscreen === 'string',
@@ -73,7 +73,7 @@
     [`${dialogBaseClass}-scrollable`]: scrollable
   }))
 
-  let outer = $derived(() => container === 'inline' || staticModal ? InlineContainer : Portal)
+  let outer = $derived(container === 'inline' || staticModal ? InlineContainer : Portal)
 
 
   // Mount 효과

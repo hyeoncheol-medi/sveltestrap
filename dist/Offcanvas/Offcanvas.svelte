@@ -33,11 +33,6 @@
     ...restProps
   } = $props();
 
-  let {
-    header: headerContent,
-    default: defaultContent
-  } = $props();
-
   let bodyElement = $state(null);
   let isTransitioning = $state(false);
   let element = $state(null);
@@ -83,15 +78,15 @@
     }
   });
 
-  $derived handleMouseDown = backdrop && toggle && bodyElement && isOpen
+  let handleMouseDown = $derived(backdrop && toggle && bodyElement && isOpen
     ? (e) => {
         if (e.target === bodyElement) {
           toggle();
         }
       }
-    : undefined;
+    : undefined)
 
-  $derived classes = classnames(
+  let classes = $derived(classnames(
     {
       offcanvas: !sm && !md && !lg && !xl && !xxl,
       'offcanvas-sm': sm,
@@ -103,9 +98,9 @@
     },
     `offcanvas-${placement}`,
     className
-  );
+  ))
 
-  $derived outer = container === 'inline' ? InlineContainer : Portal;
+  let outer = $derived(container === 'inline' ? InlineContainer : Portal)
 </script>
 
 <svelte:body onmousedown={handleMouseDown} />

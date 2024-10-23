@@ -21,19 +21,17 @@
     ...rest
   } = $props();
 
-  $: classes = classnames(className, 'form-check', {
+  let classes = $derived(classnames(className, 'form-check', {
     'form-check-reverse': reverse,
     'form-switch': type === 'switch',
     'form-check-inline': inline,
     [`form-control-${size}`]: size
-  });
-
-  $: inputClasses = classnames('form-check-input', {
+  }));
+  let inputClasses = $derived(classnames('form-check-input', {
     'is-invalid': invalid,
     'is-valid': valid
-  });
-
-  $: idFor = id || label;
+  }));
+  let idFor = id || label;
 </script>
 
 <div class={classes}>
