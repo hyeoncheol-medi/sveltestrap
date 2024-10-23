@@ -1,14 +1,24 @@
 <script>
-  export let icons = true;
-  export let theme = undefined;
+  import { run } from 'svelte/legacy';
 
-  $: if (typeof document !== 'undefined' && theme !== undefined) {
-    if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-bs-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-bs-theme', theme);
+  /**
+   * @typedef {Object} Props
+   * @property {boolean} [icons]
+   * @property {any} [theme]
+   */
+
+  /** @type {Props} */
+  let { icons = true, theme = undefined } = $props();
+
+  run(() => {
+    if (typeof document !== 'undefined' && theme !== undefined) {
+      if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      }
     }
-  }
+  });
 </script>
 
 <svelte:head>

@@ -6,19 +6,22 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
   /**
-   * The URL to visit when clicked.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [href] - The URL to visit when clicked.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let href = '';
 
-  $: classes = classnames(className, 'card-link');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', href = '', children, ...rest } = $props();
+
+  let classes = $derived(classnames(className, 'card-link'));
 </script>
 
-<a {...$$restProps} class={classes} {href}>
-  <slot />
+<a {...rest} class={classes} {href}>
+  {@render children?.()}
 </a>

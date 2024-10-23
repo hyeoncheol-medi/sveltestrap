@@ -1,14 +1,31 @@
 <script>
   import { getColumnSizeClass, isObject } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let xs = undefined;
-  export let sm = undefined;
-  export let md = undefined;
-  export let lg = undefined;
-  export let xl = undefined;
-  export let xxl = undefined;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {any} [xs]
+   * @property {any} [sm]
+   * @property {any} [md]
+   * @property {any} [lg]
+   * @property {any} [xl]
+   * @property {any} [xxl]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    xs = undefined,
+    sm = undefined,
+    md = undefined,
+    lg = undefined,
+    xl = undefined,
+    xxl = undefined,
+    children,
+    ...rest
+  } = $props();
 
   const colClasses = [];
   const lookup = {
@@ -61,6 +78,6 @@
   }
 </script>
 
-<div {...$$restProps} class={colClasses.join(' ')}>
-  <slot />
+<div {...rest} class={colClasses.join(' ')}>
+  {@render children?.()}
 </div>

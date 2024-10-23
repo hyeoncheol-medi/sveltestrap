@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Breadcrumb from './Breadcrumb.svelte';
 
   export const meta = {
@@ -56,29 +56,31 @@
   import { BreadcrumbItem } from '@sveltestrap/sveltestrap';
 </script>
 
-<Story name="Basic" let:args>
-  <div class="breadcrumbs-example">
-    <Breadcrumb {...args}>
-      <BreadcrumbItem active>Home</BreadcrumbItem>
-    </Breadcrumb>
+<Story name="Basic" >
+  {#snippet children({ args })}
+    <div class="breadcrumbs-example">
+      <Breadcrumb {...args}>
+        <BreadcrumbItem active>Home</BreadcrumbItem>
+      </Breadcrumb>
 
-    <Breadcrumb {...args}>
-      <BreadcrumbItem>
-        <a href="#home">Home</a>
-      </BreadcrumbItem>
-      <BreadcrumbItem active>Library</BreadcrumbItem>
-    </Breadcrumb>
+      <Breadcrumb {...args}>
+        <BreadcrumbItem>
+          <a href="#home">Home</a>
+        </BreadcrumbItem>
+        <BreadcrumbItem active>Library</BreadcrumbItem>
+      </Breadcrumb>
 
-    <Breadcrumb {...args}>
-      <BreadcrumbItem>
-        <a href="#home">Home</a>
-      </BreadcrumbItem>
-      <BreadcrumbItem>
-        <a href="#library">Library</a>
-      </BreadcrumbItem>
-      <BreadcrumbItem active>Data</BreadcrumbItem>
-    </Breadcrumb>
-  </div>
+      <Breadcrumb {...args}>
+        <BreadcrumbItem>
+          <a href="#home">Home</a>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <a href="#library">Library</a>
+        </BreadcrumbItem>
+        <BreadcrumbItem active>Data</BreadcrumbItem>
+      </Breadcrumb>
+    </div>
+  {/snippet}
 </Story>
 
 <Story name="Divider">

@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Popover from './Popover.svelte';
 
   export const meta = {
@@ -130,13 +130,15 @@
 </Popover>`;
 </script>
 
-<Story name="Basic" let:args source={basicSource}>
-  <Button color="primary" id="btn-top-basic">Show on {args.placement}</Button>
-  {#key args}
-    <Popover {...args} target="btn-top-basic" style={args.theme === 'dark' ? 'color: #fff;' : ''}
-      >This is a Popover on the top of the trigger.</Popover
-    >
-  {/key}
+<Story name="Basic"  source={basicSource}>
+  {#snippet children({ args })}
+    <Button color="primary" id="btn-top-basic">Show on {args.placement}</Button>
+    {#key args}
+      <Popover {...args} target="btn-top-basic" style={args.theme === 'dark' ? 'color: #fff;' : ''}
+        >This is a Popover on the top of the trigger.</Popover
+      >
+    {/key}
+  {/snippet}
 </Story>
 
 <Story name="Placement">
@@ -178,9 +180,11 @@
   <Button color="primary" id="btn-dismissible">Click me</Button>
 
   <Popover placement="right" target="btn-dismissible" dismissible>
-    <div slot="title">
-      <i>Hello</i> <b>World!</b>
-    </div>
+    {#snippet title()}
+        <div >
+        <i>Hello</i> <b>World!</b>
+      </div>
+      {/snippet}
     This Popover is dismissesed when any click occurs.
   </Popover>
 </Story>
@@ -189,9 +193,11 @@
   <Button color="primary" id="btn-outside-click">Click me</Button>
 
   <Popover placement="right" target="btn-outside-click" hideOnOutsideClick>
-    <div slot="title">
-      <i>Hello</i> <b>World!</b>
-    </div>
+    {#snippet title()}
+        <div >
+        <i>Hello</i> <b>World!</b>
+      </div>
+      {/snippet}
     You can click inside this Popover and it will not dismiss. Dismissal will only occur if the click is outside of the popover.
   </Popover>
 </Story>
@@ -203,16 +209,20 @@
   </div>
 
   <Popover theme="light" placement="right" target="btn-light-theme" hideOnOutsideClick>
-    <div slot="title">
-      <i>Hello</i> <b>World!</b>
-    </div>
+    {#snippet title()}
+        <div >
+        <i>Hello</i> <b>World!</b>
+      </div>
+      {/snippet}
     You can click inside this Popover and it will not dismiss. Dismissal will only occur if the click is outside of the popover.
   </Popover>
 
   <Popover theme="dark" placement="right" target="btn-dark-theme" hideOnOutsideClick>
-    <div slot="title" style="color: #fff;">
-      <i>Hello</i> <b>World!</b>
-    </div>
+    {#snippet title()}
+        <div  style="color: #fff;">
+        <i>Hello</i> <b>World!</b>
+      </div>
+      {/snippet}
     You can click inside this Popover and it will not dismiss. Dismissal will only occur if the click is outside of the popover.
   </Popover>
 </Story>

@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Card from './Card.svelte';
 
   export const meta = {
@@ -80,14 +80,16 @@
   } from '@sveltestrap/sveltestrap';
 </script>
 
-<Template let:args>
-  <div class="card-example">
-    <div class="card-width">
-      <Card {...args}>
-        <CardBody>Hello World</CardBody>
-      </Card>
+<Template >
+  {#snippet children({ args })}
+    <div class="card-example">
+      <div class="card-width">
+        <Card {...args}>
+          <CardBody>Hello World</CardBody>
+        </Card>
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

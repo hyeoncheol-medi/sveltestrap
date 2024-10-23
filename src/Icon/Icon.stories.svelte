@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Icon from './Icon.svelte';
 
   export const meta = {
@@ -2076,7 +2076,7 @@
     'zoom-in',
     'zoom-out'
   ];
-  let copying = {};
+  let copying = $state({});
 
   const change = async (name) => {
     copying[name] = true;
@@ -2088,19 +2088,21 @@
     }, 1000);
   };
 
-  let filter = '';
+  let filter = $state('');
 
-  $: filteredIcons = filter.length
+  let filteredIcons = $derived(filter.length
     ? icons.filter((name) => name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
-    : icons;
+    : icons);
 </script>
 
-<Template let:args>
-  <div class="icon-example">
-    <h1 class="text-content">
-      Hello <Icon {...args} />!
-    </h1>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="icon-example">
+      <h1 class="text-content">
+        Hello <Icon {...args} />!
+      </h1>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />
@@ -2112,7 +2114,7 @@
     {#each filteredIcons as name}
       <div
         class:copying={copying[name]}
-        on:click={() => change(name)}
+        onclick={() => change(name)}
         role="button"
         aria-describedby="button"
         tabindex="0"

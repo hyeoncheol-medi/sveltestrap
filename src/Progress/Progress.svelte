@@ -1,86 +1,79 @@
 <script>
   import { classnames } from '../utils';
 
-  /**
-   * Indicates if the bar should have animation.
-   * @type {boolean}
-   */
-  export let animated = false;
+  
 
-  /**
-   * Indicates whether to show a bar.
-   * @type {boolean}
-   */
-  export let bar = false;
+  
 
-  /**
-   * The class name for the bar.
-   * @type {string}
-   */
-  export let barClassName = '';
+  
 
   /**
    * Additional CSS class name for the component
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
   /**
-   * The color of the bar.
-   * @type {string}
+   * @typedef {Object} Props
+   * @property {boolean} [animated] - Indicates if the bar should have animation.
+   * @property {boolean} [bar] - Indicates whether to show a bar.
+   * @property {string} [barClassName] - The class name for the bar.
+   * @property {string} [class]
+   * @property {string} [color] - The color of the bar.
+   * @property {number} [max] - The maximum value of the bar.
+   * @property {boolean} [multi] - Indicates if it's a multi-bar.
+   * @property {boolean} [striped] - Indicates if the bar should be striped.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {number} [value] - The current value of the bar.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let color = '';
 
-  /**
-   * The maximum value of the bar.
-   * @type {number}
-   */
-  export let max = 100;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    animated = false,
+    bar = false,
+    barClassName = '',
+    class: className = '',
+    color = '',
+    max = 100,
+    multi = false,
+    striped = false,
+    theme = null,
+    value = 0,
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * Indicates if it's a multi-bar.
-   * @type {boolean}
-   */
-  export let multi = false;
+  let classes = $derived(classnames(className, 'progress'));
 
-  /**
-   * Indicates if the bar should be striped.
-   * @type {boolean}
-   */
-  export let striped = false;
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
-
-  /**
-   * The current value of the bar.
-   * @type {number}
-   */
-  export let value = 0;
-
-  $: classes = classnames(className, 'progress');
-
-  $: progressBarClasses = classnames(
+  let progressBarClasses = $derived(classnames(
     'progress-bar',
     bar ? className || barClassName : barClassName,
     animated ? 'progress-bar-animated' : null,
     color ? `text-bg-${color}` : null,
     striped || animated ? 'progress-bar-striped' : null
-  );
+  ));
 
-  $: percent = (parseInt(value, 10) / parseInt(max, 10)) * 100;
+  let percent = $derived((parseInt(value, 10) / parseInt(max, 10)) * 100);
 </script>
 
 {#if bar}
   {#if multi}
-    <slot />
+    {@render children?.()}
   {:else}
     <div
-      {...$$restProps}
+      {...rest}
       class={progressBarClasses}
       style="width: {percent}%"
       data-bs-theme={theme}
@@ -89,13 +82,13 @@
       aria-valuemin="0"
       aria-valuemax={max}
     >
-      <slot />
+      {@render children?.()}
     </div>
   {/if}
 {:else}
-  <div {...$$restProps} data-bs-theme={theme} class={classes}>
+  <div {...rest} data-bs-theme={theme} class={classes}>
     {#if multi}
-      <slot />
+      {@render children?.()}
     {:else}
       <div
         class={progressBarClasses}
@@ -106,7 +99,7 @@
         aria-valuemin="0"
         aria-valuemax={max}
       >
-        <slot />
+        {@render children?.()}
       </div>
     {/if}
   </div>

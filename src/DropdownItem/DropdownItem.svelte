@@ -1,26 +1,46 @@
 <script>
+  import { createBubbler, handlers } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { getContext } from 'svelte';
   import { classnames } from '../utils';
 
   const context = getContext('dropdownContext');
 
-  let className = '';
-  export { className as class };
+  
 
-  export let active = false;
-  export let disabled = false;
-  export let divider = false;
-  export let header = false;
-  export let toggle = true;
-  export let href = '';
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [active]
+   * @property {boolean} [disabled]
+   * @property {boolean} [divider]
+   * @property {boolean} [header]
+   * @property {boolean} [toggle]
+   * @property {string} [href]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, {
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    active = false,
+    disabled = false,
+    divider = false,
+    header = false,
+    toggle = true,
+    href = '',
+    children,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, {
     disabled,
     'dropdown-item': !divider && !header,
     active: active,
     'dropdown-header': header,
     'dropdown-divider': divider
-  });
+  }));
 
   function handleItemClick(e) {
     if (disabled || header || divider) {
@@ -36,21 +56,21 @@
 
 <li>
   {#if header}
-    <h6 {...$$restProps} class={classes}>
-      <slot />
+    <h6 {...rest} class={classes}>
+      {@render children?.()}
     </h6>
   {:else if divider}
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div {...$$restProps} on:click on:click={handleItemClick} class={classes}>
-      <slot />
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div {...rest} onclick={handlers(bubble('click'), handleItemClick)} class={classes}>
+      {@render children?.()}
     </div>
   {:else if href}
-    <a {...$$restProps} click on:click={handleItemClick} {href} class={classes}>
-      <slot />
+    <a {...rest} click onclick={handleItemClick} {href} class={classes}>
+      {@render children?.()}
     </a>
   {:else}
-    <button type="button" {...$$restProps} on:click on:click={handleItemClick} class={classes}>
-      <slot />
+    <button type="button" {...rest} onclick={handlers(bubble('click'), handleItemClick)} class={classes}>
+      {@render children?.()}
     </button>
   {/if}
 </li>

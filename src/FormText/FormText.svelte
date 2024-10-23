@@ -1,14 +1,27 @@
 <script>
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let inline = false;
-  export let color = undefined;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [inline]
+   * @property {any} [color]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, !inline ? 'form-text' : false, color ? `text-${color}` : false);
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    inline = false,
+    color = undefined,
+    children,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, !inline ? 'form-text' : false, color ? `text-${color}` : false));
 </script>
 
-<small {...$$restProps} class={classes}>
-  <slot />
+<small {...rest} class={classes}>
+  {@render children?.()}
 </small>

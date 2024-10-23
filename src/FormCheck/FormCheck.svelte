@@ -1,22 +1,25 @@
 <script>
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let checked = false;
-  export let disabled = false;
-  export let group = undefined;
-  export let id = undefined;
-  export let inline = false;
-  export let inner = undefined;
-  export let invalid = false;
-  export let label = '';
-  export let name = '';
-  export let reverse = false;
-  export let size = '';
-  export let type = 'checkbox';
-  export let valid = false;
-  export let value = undefined;
+  let {
+    class: className = '',
+    checked = false,
+    disabled = false,
+    group = undefined,
+    id = undefined,
+    inline = false,
+    inner = undefined,
+    invalid = false,
+    label = '',
+    name = '',
+    reverse = false,
+    size = '',
+    type = 'checkbox',
+    valid = false,
+    value = undefined,
+    label: labelSnippet,
+    ...rest
+  } = $props();
 
   $: classes = classnames(className, 'form-check', {
     'form-check-reverse': reverse,
@@ -29,54 +32,55 @@
     'is-invalid': invalid,
     'is-valid': valid
   });
+
   $: idFor = id || label;
 </script>
 
 <div class={classes}>
   {#if type === 'radio'}
     <input
-      {...$$restProps}
+      {...rest}
       class={inputClasses}
       id={idFor}
       type="radio"
       bind:group
       bind:this={inner}
-      on:blur
-      on:change
-      on:focus
-      on:input
+      onblur
+      onchange
+      onfocus
+      oninput
       {disabled}
       {name}
       {value}
     />
   {:else if type === 'switch'}
     <input
-      {...$$restProps}
+      {...rest}
       class={inputClasses}
       id={idFor}
       type="checkbox"
       bind:checked
       bind:this={inner}
-      on:blur
-      on:change
-      on:focus
-      on:input
+      onblur
+      onchange
+      onfocus
+      oninput
       {disabled}
       {name}
       {value}
     />
   {:else}
     <input
-      {...$$restProps}
+      {...rest}
       class={inputClasses}
       id={idFor}
       type="checkbox"
       bind:checked
       bind:this={inner}
-      on:blur
-      on:change
-      on:focus
-      on:input
+      onblur
+      onchange
+      onfocus
+      oninput
       {disabled}
       {name}
       {value}
@@ -84,7 +88,7 @@
   {/if}
   {#if label}
     <label class="form-check-label" for={idFor}>
-      <slot name="label">{label}</slot>
+      {@render labelSnippet?.(label) ?? label}
     </label>
   {/if}
 </div>

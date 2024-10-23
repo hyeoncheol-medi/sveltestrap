@@ -6,12 +6,19 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'p-5 mb-4 bg-light rounded-3');
+  /** @type {Props} */
+  let { class: className = '', children } = $props();
+  
+
+  let classes = $derived(classnames(className, 'p-5 mb-4 bg-light rounded-3'));
 </script>
 
 <div class={classes}>
-  <slot />
+  {@render children?.()}
 </div>

@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Container from './Container.svelte';
 
   export const meta = {
@@ -60,10 +60,12 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
 </script>
 
-<Template let:args>
-  <Container {...args}>
-    <h3 class="container">fluid</h3>
-  </Container>
+<Template >
+  {#snippet children({ args })}
+    <Container {...args}>
+      <h3 class="container">fluid</h3>
+    </Container>
+  {/snippet}
 </Template>
 
 <Story name="Basic">

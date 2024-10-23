@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Theme from './Theme.svelte';
 
   export const meta = {
@@ -76,9 +76,11 @@
 </Story>
 
 <Story name="Toggler">
-  <ThemeToggler let:currentColorMode let:toggleColorMode>
-    <Button color="primary" on:click={() => toggleColorMode()}>Toggle Theme: {currentColorMode}</Button>
-  </ThemeToggler>
+  <ThemeToggler  >
+    {#snippet children({ currentColorMode, toggleColorMode })}
+        <Button color="primary" on:click={() => toggleColorMode()}>Toggle Theme: {currentColorMode}</Button>
+          {/snippet}
+    </ThemeToggler>
 
   <Card class="mt-3">
     <CardHeader>

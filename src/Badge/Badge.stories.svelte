@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Badge from './Badge.svelte';
 
   export const meta = {
@@ -111,8 +111,10 @@
   `;
 </script>
 
-<Template let:args>
-  <Badge {...args} />
+<Template >
+  {#snippet children({ args })}
+    <Badge {...args} />
+  {/snippet}
 </Template>
 
 <Story name="Basic" args={{ color: 'primary', children: 'Badge' }} source={basicSource} />

@@ -4,38 +4,24 @@
 
   setContext('figure', true);
 
-  /**
-   * Additional CSS class names for styling.
-   * @type {string}
-   * @default ''
-   */
-  let className = '';
-  export { className as class };
+  let {
+    class: klass = '',
+    alt,
+    caption,
+    children,
+    captionSnippet
+  } = $props();
 
-  /**
-   * The alt attribute for the image.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let alt = undefined;
-
-  /**
-   * The caption for the image.
-   * @type {string | HTMLSlotElement | undefined}
-   * @default undefined
-   */
-  export let caption = undefined;
-
-  $: classes = classnames('figure', className);
+  $: classes = classnames('figure', klass);
 </script>
 
-<img {alt} {...$$restProps} class={classes} />
+<img {alt} class={classes} />
 
-<figure class={classes} {...$$restProps}>
-  <slot />
-  {#if caption || $$slots.caption}
+<figure class={classes}>
+  {@render children?.()}
+  {#if caption || captionSnippet}
     <figcaption class="figure-caption">
-      {caption}<slot name="caption" />
+      {caption}{@render captionSnippet?.()}
     </figcaption>
   {/if}
 </figure>

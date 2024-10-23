@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { onDestroy, onMount } from 'svelte';
 
   import { browserEvent, classnames, getNewCarouselActiveIndex } from '../utils';
@@ -8,63 +10,55 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
-  /**
-   * The index of the currently active item in the carousel.
-   * @type {number}
-   * @default 0
-   */
-  export let activeIndex = 0;
+  
 
-  /**
-   * The time interval (in milliseconds) between automatic transitions of the carousel items.
-   * @type {number}
-   * @default 5000
-   */
-  export let interval = 5000;
+  
 
-  /**
-   * An array of items to be displayed in the carousel.
-   * @type {Array}
-   * @default []
-   */
-  export let items = [];
+  
 
-  /**
-   * A boolean indicating whether the carousel should respond to keyboard navigation.
-   * @type {boolean}
-   * @default true
-   */
-  export let keyboard = true;
+  
 
-  /**
-   * A boolean indicating whether automatic cycling of the carousel should pause on hover.
-   * @type {boolean}
-   * @default true
-   */
-  export let pause = true;
+  
 
-  /**
-   * A boolean indicating whether the carousel should automatically cycle through items.
-   * @type {boolean}
-   * @default true
-   */
-  export let ride = true;
+  
 
+  
   /**
-   * The theme name override to apply to this component instance.
-   * @type {string | undefined}
-   * @default undefined
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {number} [activeIndex] - The index of the currently active item in the carousel.
+   * @property {number} [interval] - The time interval (in milliseconds) between automatic transitions of the carousel items.
+   * @property {Array} [items] - An array of items to be displayed in the carousel.
+   * @property {boolean} [keyboard] - A boolean indicating whether the carousel should respond to keyboard navigation.
+   * @property {boolean} [pause] - A boolean indicating whether automatic cycling of the carousel should pause on hover.
+   * @property {boolean} [ride] - A boolean indicating whether the carousel should automatically cycle through items.
+   * @property {string | undefined} [theme] - The theme name override to apply to this component instance.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let theme = undefined;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    activeIndex = $bindable(0),
+    interval = 5000,
+    items = [],
+    keyboard = true,
+    pause = true,
+    ride = true,
+    theme = undefined,
+    children,
+    ...rest
+  } = $props();
 
   let _rideTimeoutId = false;
   let _removeVisibilityChangeListener = false;
-  let classes = '';
+  let classes = $state('');
 
-  $: classes = classnames(className, 'carousel', 'slide');
+  run(() => {
+    classes = classnames(className, 'carousel', 'slide');
+  });
 
   onMount(() => {
     setRideTimeout();
@@ -125,15 +119,15 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div
-  {...$$restProps}
+  {...rest}
   role="presentation"
   class={classes}
   data-bs-theme={theme}
-  on:mouseenter={() => (pause ? clearRideTimeout() : undefined)}
-  on:mouseleave={() => (pause ? setRideTimeout() : undefined)}
+  onmouseenter={() => (pause ? clearRideTimeout() : undefined)}
+  onmouseleave={() => (pause ? setRideTimeout() : undefined)}
 >
-  <slot />
+  {@render children?.()}
 </div>

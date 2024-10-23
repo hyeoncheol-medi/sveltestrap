@@ -1,4 +1,7 @@
 <script>
+  import { run, createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { FormCheck } from '../FormCheck';
   import { FormFeedback } from '../FormFeedback';
   import { classnames } from '../utils';
@@ -8,181 +11,124 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
   /**
-   * Bootstrap size to apply to the input.
-   * @type {string | undefined}
-   * @default undefined
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string | undefined} [bsSize] - Bootstrap size to apply to the input.
+   * @property {boolean} [checked] - Indicates whether the input should be checked
+Used with type "checkbox", "radio", and "switch".
+   * @property {string | undefined} [color] - Color selection of the input
+Used with type "color"
+   * @property {boolean | undefined} [disabled] - Determines whether the input is disabled.
+   * @property {string | Array} [feedback] - Feedback message for the Input.
+   * @property {Array | undefined} [files] - Array of files for file names for input.
+Used with type "file"
+   * @property {string | undefined} [group] - Group identifier for the Input.
+Used with type "checkbox", "radio", and "switch".
+   * @property {string | undefined} [inner] - Inner content for the Input.
+   * @property {boolean} [invalid] - Indicates whether the input is invalid.
+   * @property {string | undefined} [label] - Label for the input.
+Used with type "checkbox", "radio", "switch".
+   * @property {string | number | undefined} [max] - Maximum value for the Input.
+Used with type "date", "datetime", "datetime-local", "month", "number", "time", "range", and "week"
+   * @property {string | number | undefined} [min] - Minimum value for the Input.
+Used with type "date", "datetime", "datetime-local", "month", "number", "time", "range", and "week"
+   * @property {boolean | undefined} [multiple] - Indicates whether the Input allows multiple selections.
+Used with type "email" and "file".
+   * @property {string} [name] - Name attribute for the Input.
+   * @property {string} [placeholder] - Placeholder text for the input.
+   * @property {boolean} [plaintext] - Indicates whether the input should be rendered in plaintext mode.
+   * @property {boolean | undefined} [readonly] - Indicates whether the input is read-only.
+   * @property {boolean} [reverse] - Indicates whether the input is reversed.
+   * @property {string | undefined} [size] - Determines the size of the input.
+   * @property {string | undefined} [theme] - Theme name override to apply to the input.
+   * @property {string} [type] - Determines the type of input.
+   * @property {boolean} [valid] - Indicates whether the input is valid.
+   * @property {string | undefined} [value] - Value of the input.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let bsSize = undefined;
 
-  /**
-   * Indicates whether the input should be checked
-   * Used with type "checkbox", "radio", and "switch".
-   * @type {boolean}
-   * @default false
-   */
-  export let checked = false;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    bsSize = $bindable(undefined),
+    checked = $bindable(false),
+    color = undefined,
+    disabled = undefined,
+    feedback = undefined,
+    files = $bindable(undefined),
+    group = $bindable(undefined),
+    inner = $bindable(undefined),
+    invalid = false,
+    label = undefined,
+    max = undefined,
+    min = undefined,
+    multiple = undefined,
+    name = '',
+    placeholder = '',
+    plaintext = false,
+    readonly = undefined,
+    reverse = false,
+    size = $bindable(undefined),
+    theme = undefined,
+    type = 'text',
+    valid = false,
+    value = $bindable(undefined),
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * Color selection of the input
-   * Used with type "color"
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let color = undefined;
+  let classes = $state();
+  let tag = $state();
 
-  /**
-   * Determines whether the input is disabled.
-   * @type {boolean | undefined}
-   * @default undefined
-   */
-  export let disabled = undefined;
-
-  /**
-   * Feedback message for the Input.
-   * @type {string | Array}
-   * @default undefined
-   */
-  export let feedback = undefined;
-
-  /**
-   * Array of files for file names for input.
-   * Used with type "file"
-   * @type {Array | undefined}
-   * @default undefined
-   */
-  export let files = undefined;
-
-  /**
-   * Group identifier for the Input.
-   * Used with type "checkbox", "radio", and "switch".
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let group = undefined;
-
-  /**
-   * Inner content for the Input.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let inner = undefined;
-
-  /**
-   * Indicates whether the input is invalid.
-   * @type {boolean}
-   * @default false
-   */
-  export let invalid = false;
-
-  /**
-   * Label for the input.
-   * Used with type "checkbox", "radio", "switch".
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let label = undefined;
-
-  /**
-   * Maximum value for the Input.
-   * Used with type "date", "datetime", "datetime-local", "month", "number", "time", "range", and "week"
-   * @type {string | number | undefined}
-   * @default undefined
-   */
-  export let max = undefined;
-
-  /**
-   * Minimum value for the Input.
-   * Used with type "date", "datetime", "datetime-local", "month", "number", "time", "range", and "week"
-   * @type {string | number | undefined}
-   * @default undefined
-   */
-  export let min = undefined;
-
-  /**
-   * Indicates whether the Input allows multiple selections.
-   * Used with type "email" and "file".
-   * @type {boolean | undefined}
-   * @default undefined
-   */
-  export let multiple = undefined;
-
-  /**
-   * Name attribute for the Input.
-   * @type {string}
-   * @default ''
-   */
-  export let name = '';
-
-  /**
-   * Placeholder text for the input.
-   * @type {string}
-   * @default ''
-   */
-  export let placeholder = '';
-
-  /**
-   * Indicates whether the input should be rendered in plaintext mode.
-   * @type {boolean}
-   * @default false
-   */
-  export let plaintext = false;
-
-  /**
-   * Indicates whether the input is read-only.
-   * @type {boolean | undefined}
-   * @default undefined
-   */
-  export let readonly = undefined;
-
-  /**
-   * Indicates whether the input is reversed.
-   * @type {boolean}
-   * @default false
-   */
-  export let reverse = false;
-
-  /**
-   * Determines the size of the input.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let size = undefined;
-
-  /**
-   * Theme name override to apply to the input.
-   * @type {string | undefined}
-   */
-  export let theme = undefined;
-
-  /**
-   * Determines the type of input.
-   * @type {string}
-   * @default 'text'
-   */
-  export let type = 'text';
-
-  /**
-   * Indicates whether the input is valid.
-   * @type {boolean}
-   * @default false
-   */
-  export let valid = false;
-
-  /**
-   * Value of the input.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let value = undefined;
-
-  let classes;
-  let tag;
-
-  $: {
+  run(() => {
     const isNotaNumber = new RegExp('\\D', 'g');
 
     let isBtn = false;
@@ -236,28 +182,28 @@
       [`form-select-${bsSize}`]: bsSize && tag === 'select',
       [`btn-${bsSize}`]: bsSize && isBtn
     });
-  }
+  });
 </script>
 
 {#if tag === 'input'}
   {#if type === 'text' || type === 'password' || type === 'search' || type === 'tel' || type === 'url'}
     <input
-      {...$$restProps}
+      {...rest}
       {...{ type }}
       data-bs-theme={theme}
       class={classes}
       bind:value
       bind:this={inner}
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {disabled}
       {name}
       {placeholder}
@@ -266,22 +212,22 @@
     />
   {:else if type === 'color'}
     <input
-      {...$$restProps}
+      {...rest}
       data-bs-theme={theme}
       class={classes}
       type="color"
       bind:value
       bind:this={inner}
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {disabled}
       {name}
       {placeholder}
@@ -289,22 +235,22 @@
     />
   {:else if type === 'email'}
     <input
-      {...$$restProps}
+      {...rest}
       data-bs-theme={theme}
       class={classes}
       type="email"
       bind:value
       bind:this={inner}
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {disabled}
       {multiple}
       {name}
@@ -314,23 +260,23 @@
     />
   {:else if type === 'file'}
     <input
-      {...$$restProps}
+      {...rest}
       data-bs-theme={theme}
       class={classes}
       type="file"
       bind:files
       bind:value
       bind:this={inner}
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {disabled}
       {invalid}
       {multiple}
@@ -341,7 +287,7 @@
     />
   {:else if type === 'checkbox' || type === 'radio' || type === 'switch'}
     <FormCheck
-      {...$$restProps}
+      {...rest}
       data-bs-theme={theme}
       class={className}
       size={bsSize}
@@ -370,22 +316,22 @@
     />
   {:else if type === 'date' || type === 'datetime' || type === 'datetime-local' || type === 'month' || type === 'number' || type === 'time' || type === 'range' || type === 'week'}
     <input
-      {...$$restProps}
+      {...rest}
       {...{ type }}
       data-bs-theme={theme}
       class={classes}
       bind:value
       bind:this={inner}
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {disabled}
       {max}
       {min}
@@ -395,22 +341,22 @@
     />
   {:else}
     <input
-      {...$$restProps}
+      {...rest}
       data-bs-theme={theme}
       class={classes}
       {...{ type }}
       bind:this={inner}
       bind:value
-      on:blur
-      on:change
-      on:click
-      on:focus
-      on:input
-      on:keydown
-      on:keypress
-      on:keyup
-      on:mousedown
-      on:mouseup
+      onblur={bubble('blur')}
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onfocus={bubble('focus')}
+      oninput={bubble('input')}
+      onkeydown={bubble('keydown')}
+      onkeypress={bubble('keypress')}
+      onkeyup={bubble('keyup')}
+      onmousedown={bubble('mousedown')}
+      onmouseup={bubble('mouseup')}
       {name}
       {disabled}
       {placeholder}
@@ -419,43 +365,43 @@
   {/if}
 {:else if tag === 'textarea'}
   <textarea
-    {...$$restProps}
+    {...rest}
     data-bs-theme={theme}
     class={classes}
     bind:value
     bind:this={inner}
-    on:blur
-    on:change
-    on:click
-    on:focus
-    on:input
-    on:keydown
-    on:keypress
-    on:keyup
-    on:mousedown
-    on:mouseup
+    onblur={bubble('blur')}
+    onchange={bubble('change')}
+    onclick={bubble('click')}
+    onfocus={bubble('focus')}
+    oninput={bubble('input')}
+    onkeydown={bubble('keydown')}
+    onkeypress={bubble('keypress')}
+    onkeyup={bubble('keyup')}
+    onmousedown={bubble('mousedown')}
+    onmouseup={bubble('mouseup')}
     {disabled}
     {name}
     {placeholder}
     {readonly}
-  />
+></textarea>
 {:else if tag === 'select' && !multiple}
   <select
-    {...$$restProps}
+    {...rest}
     data-bs-theme={theme}
     class={classes}
     bind:value
     bind:this={inner}
-    on:blur
-    on:click
-    on:change
-    on:focus
-    on:input
+    onblur={bubble('blur')}
+    onclick={bubble('click')}
+    onchange={bubble('change')}
+    onfocus={bubble('focus')}
+    oninput={bubble('input')}
     {name}
     {disabled}
     {readonly}
   >
-    <slot />
+    {@render children?.()}
   </select>
 {/if}
 

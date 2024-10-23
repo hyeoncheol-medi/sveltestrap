@@ -5,84 +5,29 @@
   import { InlineContainer } from '../InlineContainer';
   import { Portal } from '../Portal';
 
-  /**
-   * Additional CSS class names for the popover.
-   * @type {string}
-   */
-  let className = '';
-  export { className as class };
-
-  /**
-   * Flag to enable animation for the popover.
-   * @type {boolean}
-   */
-  export let animation = true;
-
-  /**
-   * The content to be displayed within the popover.
-   * @type {string}
-   */
-  export let children = '';
-
-  /**
-   * The container in which the popover should be rendered.
-   * @type {string | undefined}
-   */
-  export let container = undefined;
-
-  /**
-   * Flag to indicate if the popover should be dismissible.
-   * @type {boolean}
-   */
-  export let dismissible = false;
-
-  /**
-   * Flag to hide the popover on outside click.
-   * @type {boolean}
-   */
-  export let hideOnOutsideClick = false;
-
-  /**
-   * Controls the visibility of the popover.
-   * @type {boolean}
-   */
-  export let isOpen = false;
-
-  /**
-   * The preferred placement of the popover.
-   * @type {string}
-   */
-  export let placement = 'top';
-
-  /**
-   * The target element to which the popover is attached.
-   * @type {string}
-   */
-  export let target = '';
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
-
-  /**
-   * The title of the popover.
-   * @type {string}
-   */
-  export let title = '';
-
-  /**
-   * The trigger action to open/close the popover.
-   * @type {string}
-   */
-  export let trigger = 'click';
+  let {
+    class: className = '',
+    animation = true,
+    children = '',
+    container = undefined,
+    dismissible = false,
+    hideOnOutsideClick = false,
+    isOpen = false,
+    placement = 'top',
+    target = '',
+    theme = null,
+    title = '',
+    trigger = 'click',
+    titleContent,
+    defaultContent,
+    ...restProps
+  } = $props();
 
   let targetEl;
   let popoverEl;
-  let popperInstance;
+  let popperInstance = $state(undefined);
   let bsPlacement;
-  let popperPlacement = placement;
+  let popperPlacement = $state(placement);
 
   const checkPopperPlacement = {
     name: 'checkPopperPlacement',
@@ -93,7 +38,7 @@
     }
   };
 
-  $: {
+  $effect(() => {
     if (isOpen && popoverEl) {
       popperInstance = createPopper(targetEl, popoverEl, {
         placement,
@@ -113,7 +58,7 @@
       popperInstance.destroy();
       popperInstance = undefined;
     }
-  }
+  });
 
   const open = () => (isOpen = true);
   const close = () => (isOpen = false);
@@ -168,11 +113,13 @@
     }
   };
 
-  $: if (!target) {
-    throw new Error('Need target!');
-  }
+  $effect(() => {
+    if (!target) {
+      throw new Error('Need target!');
+    }
+  });
 
-  $: {
+  $effect(() => {
     if (popperPlacement === 'left') {
       bsPlacement = 'start';
     } else if (popperPlacement === 'right') {
@@ -180,26 +127,28 @@
     } else {
       bsPlacement = popperPlacement;
     }
-  }
+  });
 
-  $: classes = classnames(
-    className,
-    'popover',
-    animation ? 'fade' : false,
-    `bs-popover-${bsPlacement}`,
-    isOpen ? 'show' : false
+  const classes = $derived(
+    classnames(
+      className,
+      'popover',
+      animation ? 'fade' : false,
+      `bs-popover-${bsPlacement}`,
+      isOpen ? 'show' : false
+    )
   );
 
-  $: outer = container === 'inline' ? InlineContainer : Portal;
+  const outer = $derived(container === 'inline' ? InlineContainer : Portal);
 </script>
 
-<svelte:window on:mousedown={handleOutsideClick} />
+<svelte:window onmousedown={handleOutsideClick} />
 
 {#if isOpen}
   <svelte:component this={outer}>
     <div
       bind:this={popoverEl}
-      {...$$restProps}
+      {...restProps}
       class={classes}
       role="tooltip"
       data-bs-theme={theme}
@@ -207,13 +156,13 @@
     >
       <div class="popover-arrow" data-popper-arrow />
       <h3 class="popover-header">
-        <slot name="title">{title}</slot>
+        {@render titleContent?.() ?? title}
       </h3>
       <div class="popover-body">
         {#if children}
           {children}
         {:else}
-          <slot />
+          {@render defaultContent?.()}
         {/if}
       </div>
     </div>

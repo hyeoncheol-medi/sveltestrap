@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Button from './Button.svelte';
 
   export const meta = {
@@ -101,8 +101,10 @@
   };
 </script>
 
-<Template let:args>
-  <Button {...args} on:click></Button>
+<Template >
+  {#snippet children({ args })}
+    <Button {...args} on:click></Button>
+  {/snippet}
 </Template>
 
 <Story name="Basic" args={{ size: 'md', color: 'primary', children: 'Button' }} />

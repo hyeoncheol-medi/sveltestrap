@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { classnames } from '../utils';
 
   /**
@@ -6,36 +8,36 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Carousel items.
-   * @type {any[]}
-   * @default []
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {any[]} [items] - Carousel items.
+   * @property {number} [activeIndex] - Active carousel item index.
    */
-  export let items = [];
 
-  /**
-   * Active carousel item index.
-   * @type {number}
-   * @default 0
-   */
-  export let activeIndex = 0;
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', items = [], activeIndex = $bindable(0), ...rest } = $props();
 
-  let classes = '';
+  let classes = $state('');
 
-  $: classes = classnames(className, 'carousel-indicators');
+  run(() => {
+    classes = classnames(className, 'carousel-indicators');
+  });
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   {#each items as item, index}
     <button
       data-bs-target
       class:active={activeIndex === index}
       aria-current={activeIndex === index}
       aria-label={item.title}
-      on:click={() => (activeIndex = index)}
+      onclick={() => (activeIndex = index)}
     >
       {item.title ? item.title : ''}
     </button>

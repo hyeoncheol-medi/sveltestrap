@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { classnames } from '../utils';
 
   /**
@@ -6,30 +8,37 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Header text for caption.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [captionHeader] - Header text for caption.
+   * @property {string} [captionText] - Text for caption.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let captionHeader = '';
 
-  /**
-   * Text for caption.
-   * @type {string}
-   * @default ''
-   */
-  export let captionText = '';
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    captionHeader = '',
+    captionText = '',
+    children,
+    ...rest
+  } = $props();
 
-  let classes = '';
+  let classes = $state('');
 
-  $: classes = classnames(className, 'carousel-caption', 'd-none', 'd-md-block');
+  run(() => {
+    classes = classnames(className, 'carousel-caption', 'd-none', 'd-md-block');
+  });
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   {#if captionHeader}<h5>{captionHeader}</h5>{/if}
   {#if captionText}<p>{captionText}</p>{/if}
-  <slot />
+  {@render children?.()}
 </div>

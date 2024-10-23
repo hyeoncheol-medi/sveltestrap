@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import ListGroup from './ListGroup.svelte';
 
   export const meta = {
@@ -67,19 +67,21 @@
   const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 </script>
 
-<Template let:args>
-  <div class="listgroup-example">
-    <div class="listgroup-item-size">
-      <ListGroup {...args}>
-        <ListGroupItem active>Active</ListGroupItem>
-        <ListGroupItem>Bravo</ListGroupItem>
-        <ListGroupItem>Charlie</ListGroupItem>
-        <ListGroupItem>Delta</ListGroupItem>
-        <ListGroupItem>Echo</ListGroupItem>
-        <ListGroupItem disabled>Disabled</ListGroupItem>
-      </ListGroup>
+<Template >
+  {#snippet children({ args })}
+    <div class="listgroup-example">
+      <div class="listgroup-item-size">
+        <ListGroup {...args}>
+          <ListGroupItem active>Active</ListGroupItem>
+          <ListGroupItem>Bravo</ListGroupItem>
+          <ListGroupItem>Charlie</ListGroupItem>
+          <ListGroupItem>Delta</ListGroupItem>
+          <ListGroupItem>Echo</ListGroupItem>
+          <ListGroupItem disabled>Disabled</ListGroupItem>
+        </ListGroup>
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

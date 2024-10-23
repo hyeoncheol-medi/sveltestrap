@@ -1,21 +1,23 @@
 <script>
   import { classnames, getColumnSizeClass, isObject } from '../utils';
 
-  let className = '';
+  // Use $props rune for all props
+  let {
+    class: className = '',
+    hidden = false,
+    check = false,
+    size = '',
+    for: fore = null,
+    xs = '',
+    sm = '',
+    md = '',
+    lg = '',
+    xl = '',
+    xxl = '',
+    ...rest
+  } = $props();
 
-  export { className as class };
-  export let hidden = false;
-  export let check = false;
-  export let size = '';
-  export let fore = null;
-  export { fore as for };
-  export let xs = '';
-  export let sm = '';
-  export let md = '';
-  export let lg = '';
-  export let xl = '';
-  export let xxl = '';
-
+  // Define column widths object
   const colWidths = {
     xs,
     sm,
@@ -24,38 +26,45 @@
     xl,
     xxl
   };
-  export let widths = Object.keys(colWidths);
 
+  let widths = Object.keys(colWidths);
   const colClasses = [];
 
-  widths.forEach((colWidth) => {
-    let columnProp = $$props[colWidth];
+  $effect(() => {
+    colClasses.length = 0; // Clear the array
 
-    if (!columnProp && columnProp !== '') {
-      return;
-    }
+    widths.forEach((colWidth) => {
+      // Access the column prop from our defined props
+      let columnProp = colWidths[colWidth];
 
-    const isXs = colWidth === 'xs';
-    let colClass;
+      if (!columnProp && columnProp !== '') {
+        return;
+      }
 
-    if (isObject(columnProp)) {
-      const colSizeInterfix = isXs ? '-' : `-${colWidth}-`;
-      colClass = getColumnSizeClass(isXs, colWidth, columnProp.size);
+      const isXs = colWidth === 'xs';
+      let colClass;
 
-      colClasses.push(
-        classnames({
-          [colClass]: columnProp.size || columnProp.size === '',
-          [`order${colSizeInterfix}${columnProp.order}`]: columnProp.order || columnProp.order === 0,
-          [`offset${colSizeInterfix}${columnProp.offset}`]: columnProp.offset || columnProp.offset === 0
-        })
-      );
-    } else {
-      colClass = getColumnSizeClass(isXs, colWidth, columnProp);
-      colClasses.push(colClass);
-    }
+      if (isObject(columnProp)) {
+        const colSizeInterfix = isXs ? '-' : `-${colWidth}-`;
+        colClass = getColumnSizeClass(isXs, colWidth, columnProp.size);
+
+        colClasses.push(
+          classnames({
+            [colClass]: columnProp.size || columnProp.size === '',
+            [`order${colSizeInterfix}${columnProp.order}`]: columnProp.order || columnProp.order === 0,
+            [`offset${colSizeInterfix}${columnProp.offset}`]: columnProp.offset || columnProp.offset === 0
+          })
+        );
+      } else {
+        colClass = getColumnSizeClass(isXs, colWidth, columnProp);
+        colClasses.push(colClass);
+      }
+    });
   });
 
-  $: classes = classnames(
+  // Reactive classes calculation
+  $derived
+  classes = classnames(
     className,
     hidden ? 'visually-hidden' : false,
     check ? 'form-check-label' : false,
@@ -65,6 +74,6 @@
   );
 </script>
 
-<label {...$$restProps} class={classes} for={fore}>
+<label {...rest} class={classes} for={fore}>
   <slot />
 </label>

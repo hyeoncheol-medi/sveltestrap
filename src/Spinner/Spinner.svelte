@@ -2,42 +2,47 @@
   import { classnames } from '../utils';
 
   // Additional CSS class name for the component
-  let className = '';
 
   /**
    * Additional CSS class name for the component
    * @type {string}
    */
-  export { className as class };
+  
 
+  
+
+  
+
+  
   /**
-   * Type of spinner border.
-   * @type {string}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [type] - Type of spinner border.
+   * @property {string} [size] - Size of the spinner.
+   * @property {string} [color] - Color of the spinner.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let type = 'border';
 
-  /**
-   * Size of the spinner.
-   * @type {string}
-   */
-  export let size = '';
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    type = 'border',
+    size = '',
+    color = '',
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * Color of the spinner.
-   * @type {string}
-   */
-  export let color = '';
-
-  $: classes = classnames(
+  let classes = $derived(classnames(
     className,
     size ? `spinner-${type}-${size}` : false,
     `spinner-${type}`,
     color ? `text-${color}` : false
-  );
+  ));
 </script>
 
-<div {...$$restProps} role="status" class={classes}>
+<div {...rest} role="status" class={classes}>
   <span class="visually-hidden">
-    <slot>Loading...</slot>
+    {#if children}{@render children()}{:else}Loading...{/if}
   </span>
 </div>

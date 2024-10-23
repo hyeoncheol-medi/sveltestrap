@@ -1,12 +1,19 @@
 <script>
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'toast-body');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', children, ...rest } = $props();
+  
+
+  let classes = $derived(classnames(className, 'toast-body'));
 </script>
 
-<div {...$$restProps} class={classes}>
-  <slot />
+<div {...rest} class={classes}>
+  {@render children?.()}
 </div>

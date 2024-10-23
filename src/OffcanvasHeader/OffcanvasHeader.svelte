@@ -1,26 +1,42 @@
 <script>
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let children = undefined;
-  export let closeAriaLabel = 'Close';
-  export let toggle = undefined;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {any} [children]
+   * @property {string} [closeAriaLabel]
+   * @property {any} [toggle]
+   * @property {import('svelte').Snippet} [children]
+   * @property {import('svelte').Snippet} [close]
+   */
 
-  $: classes = classnames(className, 'offcanvas-header');
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    children = undefined,
+    closeAriaLabel = 'Close',
+    toggle = undefined,
+    children,
+    close,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, 'offcanvas-header'));
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   <h5 class="offcanvas-title">
     {#if children}
       {children}
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </h5>
-  <slot name="close">
+  {#if close}{@render close()}{:else}
     {#if typeof toggle === 'function'}
-      <button aria-label={closeAriaLabel} class="btn-close" on:click={toggle} type="button" />
+      <button aria-label={closeAriaLabel} class="btn-close" onclick={toggle} type="button"></button>
     {/if}
-  </slot>
+  {/if}
 </div>

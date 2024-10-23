@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { classnames } from '../utils';
 
   /**
@@ -6,40 +8,37 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
   /**
-   * Place image at the top of the card.
-   * @type {boolean}
-   * @default false
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [top] - Place image at the top of the card.
+   * @property {boolean} [bottom] - Place image at the bottom of the card.
+   * @property {string} src - The image URL.
+   * @property {string} [alt] - The image alt text.
    */
-  export let top = false;
 
-  /**
-   * Place image at the bottom of the card.
-   * @type {boolean}
-   * @default false
-   */
-  export let bottom = false;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    top = false,
+    bottom = false,
+    src,
+    alt = '',
+    ...rest
+  } = $props();
 
-  /**
-   * The image URL.
-   * @type {string}
-   * @default ''
-   */
-  export let src;
+  let classes = $state('');
 
-  /**
-   * The image alt text.
-   * @type {string}
-   * @default ''
-   */
-  export let alt = '';
-
-  let classes = '';
-
-  $: {
+  run(() => {
     let cardImgClassName = 'card-img';
 
     if (top) {
@@ -51,7 +50,7 @@
     }
 
     classes = classnames(className, cardImgClassName);
-  }
+  });
 </script>
 
-<img {...$$restProps} class={classes} {src} {alt} />
+<img {...rest} class={classes} {src} {alt} />

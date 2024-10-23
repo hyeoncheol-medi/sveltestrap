@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Accordion from './Accordion.svelte';
 
   export const meta = {
@@ -63,8 +63,8 @@
   import { Story } from '@storybook/addon-svelte-csf';
   import { AccordionItem } from '@sveltestrap/sveltestrap';
 
-  let id = 1;
-  let open = true;
+  let id = $state(1);
+  let open = $state(true);
 
   const basicSource = `<Accordion>
   <AccordionItem header="Home">Fallbrook</AccordionItem>
@@ -75,16 +75,18 @@
 </Accordion>`;
 </script>
 
-<Story name="Basic" let:args source={basicSource}>
-  {#key args}
-    <Accordion {...args}>
-      <AccordionItem header="Home">Fallbrook</AccordionItem>
-      <AccordionItem header="School">
-        <a href="#home">Buena Vista Elementary</a>
-      </AccordionItem>
-      <AccordionItem header="Library">UCSB Library</AccordionItem>
-    </Accordion>
-  {/key}
+<Story name="Basic"  source={basicSource}>
+  {#snippet children({ args })}
+    {#key args}
+      <Accordion {...args}>
+        <AccordionItem header="Home">Fallbrook</AccordionItem>
+        <AccordionItem header="School">
+          <a href="#home">Buena Vista Elementary</a>
+        </AccordionItem>
+        <AccordionItem header="Library">UCSB Library</AccordionItem>
+      </Accordion>
+    {/key}
+  {/snippet}
 </Story>
 
 <Story name="Events">
@@ -145,15 +147,21 @@
 <Story name="Slots">
   <Accordion>
     <AccordionItem active>
-      <h4 class="m-0" slot="header">Home</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Home</h4>
+          {/snippet}
       Fallbrook
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">School</h4>
+      {#snippet header()}
+            <h4 class="m-0" >School</h4>
+          {/snippet}
       <a href="#home">Buena Vista Elementary</a>
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">Library</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Library</h4>
+          {/snippet}
       UCSB Library
     </AccordionItem>
   </Accordion>
@@ -162,30 +170,42 @@
 <Story name="Theming">
   <Accordion theme="dark" class="mb-4">
     <AccordionItem active>
-      <h4 class="m-0" slot="header">Home</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Home</h4>
+          {/snippet}
       Fallbrook
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">School</h4>
+      {#snippet header()}
+            <h4 class="m-0" >School</h4>
+          {/snippet}
       <a href="#home">Buena Vista Elementary</a>
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">Library</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Library</h4>
+          {/snippet}
       UCSB Library
     </AccordionItem>
   </Accordion>
 
   <Accordion theme="light">
     <AccordionItem active>
-      <h4 class="m-0" slot="header">Home</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Home</h4>
+          {/snippet}
       Fallbrook
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">School</h4>
+      {#snippet header()}
+            <h4 class="m-0" >School</h4>
+          {/snippet}
       <a href="#home">Buena Vista Elementary</a>
     </AccordionItem>
     <AccordionItem>
-      <h4 class="m-0" slot="header">Library</h4>
+      {#snippet header()}
+            <h4 class="m-0" >Library</h4>
+          {/snippet}
       UCSB Library
     </AccordionItem>
   </Accordion>

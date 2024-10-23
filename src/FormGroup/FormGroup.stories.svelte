@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import FormGroup from './FormGroup.svelte';
 
   export const meta = {
@@ -89,14 +89,16 @@
   import { Badge, Form, Input } from '@sveltestrap/sveltestrap';
 </script>
 
-<Template let:args>
-  <div class="form-width form-groups-example">
-    <Form {...args}>
-      <FormGroup {...args}>
-        <Input {...args} placeholder="Enter a value" />
-      </FormGroup>
-    </Form>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="form-width form-groups-example">
+      <Form {...args}>
+        <FormGroup {...args}>
+          <Input {...args} placeholder="Enter a value" />
+        </FormGroup>
+      </Form>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />
@@ -110,7 +112,7 @@
 
       <FormGroup floating label="Select labels always float">
         <Input type="select" placeholder="Enter a value">
-          <option />
+          <option></option>
           <option value="alpha">Alpha</option>
           <option value="bravo">Bravo</option>
           <option value="charlie">Charlie</option>
@@ -119,9 +121,11 @@
 
       <FormGroup floating>
         <Input placeholder="Enter a value" />
-        <div slot="label">
-          Floating Label Slot <Badge>3</Badge>
-        </div>
+        {#snippet label()}
+                <div >
+            Floating Label Slot <Badge>3</Badge>
+          </div>
+              {/snippet}
       </FormGroup>
     </div>
   </Form>

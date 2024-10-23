@@ -6,26 +6,31 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Size of the Button Group.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [size] - Size of the Button Group.
+   * @property {boolean} [vertical] - Determines if the Button Group should appear vertically.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let size = '';
 
-  /**
-   * Determines if the Button Group should appear vertically.
-   * @type {boolean}
-   * @default false
-   */
-  export let vertical = false;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    size = '',
+    vertical = false,
+    children,
+    ...rest
+  } = $props();
 
-  $: classes = classnames(className, size ? `btn-group-${size}` : false, vertical ? 'btn-group-vertical' : 'btn-group');
+  let classes = $derived(classnames(className, size ? `btn-group-${size}` : false, vertical ? 'btn-group-vertical' : 'btn-group'));
 </script>
 
-<div {...$$restProps} class={classes}>
-  <slot />
+<div {...rest} class={classes}>
+  {@render children?.()}
 </div>

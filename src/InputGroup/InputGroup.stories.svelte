@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import InputGroup from './InputGroup.svelte';
 
   export const meta = {
@@ -60,13 +60,15 @@
   import { InputGroupText, Input } from '@sveltestrap/sveltestrap';
 </script>
 
-<Template let:args>
-  <div class="form-width">
-    <InputGroup {...args}>
-      <InputGroupText>@</InputGroupText>
-      <Input placeholder="username" />
-    </InputGroup>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="form-width">
+      <InputGroup {...args}>
+        <InputGroupText>@</InputGroupText>
+        <Input placeholder="username" />
+      </InputGroup>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

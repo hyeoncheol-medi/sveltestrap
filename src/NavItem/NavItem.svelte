@@ -5,18 +5,22 @@
    * Additional CSS class names for the nav item.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
+  
   /**
-   * Indicates whether the nav item is active.
-   * @type {boolean}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [active] - Indicates whether the nav item is active.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let active = false;
 
-  $: classes = classnames(className, 'nav-item', active ? 'active' : false);
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', active = false, children, ...rest } = $props();
+
+  let classes = $derived(classnames(className, 'nav-item', active ? 'active' : false));
 </script>
 
-<li {...$$restProps} class={classes}>
-  <slot />
+<li {...rest} class={classes}>
+  {@render children?.()}
 </li>

@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Progress from './Progress.svelte';
 
   export const meta = {
@@ -88,12 +88,14 @@
   const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 </script>
 
-<Template let:args>
-  {#each colors as color}
-    <Progress {...args} {color} value={Math.random() * 50 + 50} class="mb-2">
-      {color}
-    </Progress>
-  {/each}
+<Template >
+  {#snippet children({ args })}
+    {#each colors as color}
+      <Progress {...args} {color} value={Math.random() * 50 + 50} class="mb-2">
+        {color}
+      </Progress>
+    {/each}
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

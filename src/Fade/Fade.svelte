@@ -1,53 +1,55 @@
 <script>
+  import { createBubbler, handlers } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import toggle from '../toggle';
 
   const dispatch = createEventDispatcher();
 
-  /**
-   * Tracks the open/closed state of the Fade component.
-   * @type {boolean}
-   */
-  export let isOpen = false;
+  
 
   // Additional CSS class names for styling.
-  let className = '';
   /**
    * Additional CSS class names for styling.
    * @type {string}
    */
-  export { className as class };
+  
 
-  /**
-   * Callback triggered before Fade enters; dispatches 'opening'.
-   * @type {Function}
-   */
-  export let onEntering = () => dispatch('opening');
+  
 
-  /**
-   * Callback triggered after Fade has entered; dispatches 'open'.
-   * @type {Function}
-   */
-  export let onEntered = () => dispatch('open');
+  
 
-  /**
-   * Callback triggered before Fade exits; dispatches 'closing'.
-   * @type {Function}
-   */
-  export let onExiting = () => dispatch('closing');
+  
 
-  /**
-   * Callback triggered after Fade has exited; dispatches 'close'.
-   * @type {Function}
-   */
-  export let onExited = () => dispatch('close');
+  
 
+  
   /**
-   * Manages the state of a toggling element associated with the Fade component.
-   * @type {HTMLElement | null}
+   * @typedef {Object} Props
+   * @property {boolean} [isOpen] - Tracks the open/closed state of the Fade component.
+   * @property {string} [class]
+   * @property {Function} [onEntering] - Callback triggered before Fade enters; dispatches 'opening'.
+   * @property {Function} [onEntered] - Callback triggered after Fade has entered; dispatches 'open'.
+   * @property {Function} [onExiting] - Callback triggered before Fade exits; dispatches 'closing'.
+   * @property {Function} [onExited] - Callback triggered after Fade has exited; dispatches 'close'.
+   * @property {HTMLElement | null} [toggler] - Manages the state of a toggling element associated with the Fade component.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let toggler = null;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    isOpen = $bindable(false),
+    class: className = '',
+    onEntering = () => dispatch('opening'),
+    onEntered = () => dispatch('open'),
+    onExiting = () => dispatch('closing'),
+    onExited = () => dispatch('close'),
+    toggler = null,
+    children,
+    ...rest
+  } = $props();
 
   onMount(() =>
     toggle(toggler, (e) => {
@@ -59,18 +61,14 @@
 
 {#if isOpen}
   <div
-    {...$$restProps}
+    {...rest}
     transition:fade|local
-    on:introstart
-    on:introend
-    on:outrostart
-    on:outroend
-    on:introstart={onEntering}
-    on:introend={onEntered}
-    on:outrostart={onExiting}
-    on:outroend={onExited}
+    onintrostart={handlers(bubble('introstart'), onEntering)}
+    onintroend={handlers(bubble('introend'), onEntered)}
+    onoutrostart={handlers(bubble('outrostart'), onExiting)}
+    onoutroend={handlers(bubble('outroend'), onExited)}
     class={className}
   >
-    <slot />
+    {@render children?.()}
   </div>
 {/if}

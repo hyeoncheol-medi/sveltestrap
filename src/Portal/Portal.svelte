@@ -1,6 +1,13 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  let ref;
+  /**
+   * @typedef {Object} Props
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let { children, ...rest } = $props();
+  let ref = $state();
   let portal;
 
   onMount(() => {
@@ -16,6 +23,6 @@
   });
 </script>
 
-<div bind:this={ref} {...$$restProps}>
-  <slot />
+<div bind:this={ref} {...rest}>
+  {@render children?.()}
 </div>

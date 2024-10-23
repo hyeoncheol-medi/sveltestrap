@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Modal from './Modal.svelte';
 
   export const meta = {
@@ -205,11 +205,11 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { Button, ButtonGroup, Icon, ModalBody, ModalFooter, ModalHeader } from '@sveltestrap/sveltestrap';
 
-  let open = false;
-  let openScrollable = false;
-  let status = 'Closed';
-  let fullscreen;
-  let size;
+  let open = $state(false);
+  let openScrollable = $state(false);
+  let status = $state('Closed');
+  let fullscreen = $state();
+  let size = $state();
 
   const toggle = () => {
     size = undefined;
@@ -239,21 +239,23 @@
   const toggleScrollable = () => (openScrollable = !openScrollable);
 </script>
 
-<Template let:args>
-  <div>
-    <Button color="danger" on:click={toggle}>Open Modal</Button>
-    <Modal {...args} isOpen={open} {toggle} modalStyle="--bs-modal-color: {args.theme === 'dark' ? '#fff' : '#111'}">
-      <ModalHeader {toggle}>Modal title</ModalHeader>
-      <ModalBody>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.
-      </ModalBody>
-      <ModalFooter>
-        <Button color="primary" on:click={toggle}>Do Something</Button>
-        <Button color="secondary" on:click={toggle}>Cancel</Button>
-      </ModalFooter>
-    </Modal>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div>
+      <Button color="danger" on:click={toggle}>Open Modal</Button>
+      <Modal {...args} isOpen={open} {toggle} modalStyle="--bs-modal-color: {args.theme === 'dark' ? '#fff' : '#111'}">
+        <ModalHeader {toggle}>Modal title</ModalHeader>
+        <ModalBody>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua.
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" on:click={toggle}>Do Something</Button>
+          <Button color="secondary" on:click={toggle}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />
@@ -433,11 +435,13 @@
   <div>
     <Button color="danger" on:click={toggle}>Open Modal</Button>
     <Modal isOpen={open} {toggle} body>
-      <div slot="external" class="text-end">
-        <Button color="link" class="text-white" size="lg" on:click={toggle}>
-          <Icon name="x" class="h1" />
-        </Button>
-      </div>
+      {#snippet external()}
+            <div  class="text-end">
+          <Button color="link" class="text-white" size="lg" on:click={toggle}>
+            <Icon name="x" class="h1" />
+          </Button>
+        </div>
+          {/snippet}
       <h4>You can add content outside the Modal.</h4>
       <p>Click the X on right to close.</p>
     </Modal>

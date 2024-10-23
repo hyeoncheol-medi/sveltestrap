@@ -6,25 +6,31 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Size of the component.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [size] - Size of the component.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let size = '';
 
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    size = '',
+    theme = null,
+    children,
+    ...rest
+  } = $props();
 
-  $: classes = classnames(className, 'input-group', size ? `input-group-${size}` : null);
+  let classes = $derived(classnames(className, 'input-group', size ? `input-group-${size}` : null));
 </script>
 
-<div {...$$restProps} class={classes} data-bs-theme={theme}>
-  <slot />
+<div {...rest} class={classes} data-bs-theme={theme}>
+  {@render children?.()}
 </div>

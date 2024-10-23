@@ -1,11 +1,7 @@
 <script>
   import { getContext } from 'svelte';
 
-  let className = '';
-  export { className as class };
-  export let footer = undefined;
-  export let header = undefined;
-  export let width = undefined;
+  let { class: className, footer, header, width, children, headerContent, footerContent } = $props();
 
   const colgroup = getContext('colgroup');
   const head = getContext('header');
@@ -17,15 +13,15 @@
 {:else if foot}
   <th {...$$restProps}>
     {#if footer}{footer}{/if}
-    <slot name="footer" />
+    {@render footerContent?.()}
   </th>
 {:else if head}
   <th {...$$restProps}>
     {#if header}{header}{/if}
-    <slot name="header" />
+    {@render headerContent?.()}
   </th>
 {:else}
   <td class={className} {...$$restProps}>
-    <slot />
+    {@render children?.()}
   </td>
 {/if}

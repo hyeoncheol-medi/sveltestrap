@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Spinner from './Spinner.svelte';
 
   export const meta = {
@@ -42,10 +42,12 @@
   const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 </script>
 
-<Template let:args>
-  {#each colors as color}
-    <Spinner {...args} {color} />
-  {/each}
+<Template >
+  {#snippet children({ args })}
+    {#each colors as color}
+      <Spinner {...args} {color} />
+    {/each}
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

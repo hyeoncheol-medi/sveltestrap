@@ -1,12 +1,27 @@
 <script>
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let noGutters = false;
-  export let form = false;
-  export let cols = 0;
-  export let inner = undefined;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [noGutters]
+   * @property {boolean} [form]
+   * @property {number} [cols]
+   * @property {any} [inner]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    noGutters = false,
+    form = false,
+    cols = 0,
+    inner = $bindable(undefined),
+    children,
+    ...rest
+  } = $props();
 
   function getCols(cols) {
     const colsValue = parseInt(cols);
@@ -30,9 +45,9 @@
     return [];
   }
 
-  $: classes = classnames(className, noGutters ? 'gx-0' : null, form ? 'form-row' : 'row', ...getCols(cols));
+  let classes = $derived(classnames(className, noGutters ? 'gx-0' : null, form ? 'form-row' : 'row', ...getCols(cols)));
 </script>
 
-<div {...$$restProps} class={classes} bind:this={inner}>
-  <slot />
+<div {...rest} class={classes} bind:this={inner}>
+  {@render children?.()}
 </div>

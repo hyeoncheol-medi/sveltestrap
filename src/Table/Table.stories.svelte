@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Table from './Table.svelte';
 
   export const meta = {
@@ -166,57 +166,59 @@
 </Table>`;
 </script>
 
-<Template let:args>
-  <Table {...args}>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        {#if args.responsive}
-          {#each Array(10) as _, count}
-            <th>Header {count + 4}</th>
-          {/each}
-        {/if}
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        {#if args.responsive}
-          {#each Array(10) as _, count}
-            <td>Cell {count + 4}</td>
-          {/each}
-        {/if}
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        {#if args.responsive}
-          {#each Array(10) as _, count}
-            <td>Cell {count + 4}</td>
-          {/each}
-        {/if}
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-        {#if args.responsive}
-          {#each Array(10) as _, count}
-            <td>Cell {count + 4}</td>
-          {/each}
-        {/if}
-      </tr>
-    </tbody>
-  </Table>
+<Template >
+  {#snippet children({ args })}
+    <Table {...args}>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Username</th>
+          {#if args.responsive}
+            {#each Array(10) as _, count}
+              <th>Header {count + 4}</th>
+            {/each}
+          {/if}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          {#if args.responsive}
+            {#each Array(10) as _, count}
+              <td>Cell {count + 4}</td>
+            {/each}
+          {/if}
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+          {#if args.responsive}
+            {#each Array(10) as _, count}
+              <td>Cell {count + 4}</td>
+            {/each}
+          {/if}
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry</td>
+          <td>the Bird</td>
+          <td>@twitter</td>
+          {#if args.responsive}
+            {#each Array(10) as _, count}
+              <td>Cell {count + 4}</td>
+            {/each}
+          {/if}
+        </tr>
+      </tbody>
+    </Table>
+  {/snippet}
 </Template>
 
 <Story name="Basic" source={basicSource} />
@@ -265,18 +267,20 @@
 </Story>
 
 <Story name="Columns">
-  <Table rows={ROWS} let:row>
-    <Column header="First Name" width="8rem">
-      {row.first}
-    </Column>
-    <Column header="Last Name" width="8rem">
-      {row.last}
-    </Column>
-    <Column header="Email">
-      {row.email}
-    </Column>
-    <Column header="Birthdate" width="10rem" class="text-right">
-      {row.dob.toDateString()}
-    </Column>
-  </Table>
+  <Table rows={ROWS} >
+    {#snippet children({ row })}
+        <Column header="First Name" width="8rem">
+        {row.first}
+      </Column>
+      <Column header="Last Name" width="8rem">
+        {row.last}
+      </Column>
+      <Column header="Email">
+        {row.email}
+      </Column>
+      <Column header="Birthdate" width="10rem" class="text-right">
+        {row.dob.toDateString()}
+      </Column>
+          {/snippet}
+    </Table>
 </Story>

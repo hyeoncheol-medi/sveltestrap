@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Alert from './Alert.svelte';
 
   export const meta = {
@@ -122,12 +122,14 @@
 
   const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-  let isOpen = true;
+  let isOpen = $state(true);
   let toggle = () => (isOpen = !isOpen);
 </script>
 
-<Template let:args>
-  <Alert {...args} on:click></Alert>
+<Template >
+  {#snippet children({ args })}
+    <Alert {...args} on:click></Alert>
+  {/snippet}
 </Template>
 
 <Story name="Basic" args={{ children: "Hello, I'm a warning message.", color: 'warning' }} />

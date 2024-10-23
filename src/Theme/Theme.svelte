@@ -1,15 +1,26 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { useColorMode } from './helpers';
 
-  export let theme = 'dark';
+  /**
+   * @typedef {Object} Props
+   * @property {string} [theme]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  let ref = null;
+  /** @type {Props} */
+  let { theme = 'dark', children } = $props();
 
-  $: ref && useColorMode(ref, theme);
+  let ref = $state(null);
+
+  run(() => {
+    ref && useColorMode(ref, theme);
+  });
 </script>
 
 <span bind:this={ref}>
-  <slot />
+  {@render children?.()}
 </span>
 
 <style>

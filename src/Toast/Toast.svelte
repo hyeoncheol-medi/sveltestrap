@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { fade as fadeTrans } from 'svelte/transition';
   import { ToastBody } from '../ToastBody';
@@ -12,102 +14,88 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
-  /**
-   * Controls whether the Toast component autohides after a certain duration.
-   * @type {boolean}
-   * @default false
-   */
-  export let autohide = false;
+  
 
-  /**
-   * Specifies whether the Toast component includes a body wrapper.
-   * @type {boolean}
-   * @default false
-   */
-  export let body = false;
+  
 
-  /**
-   * The time delay (in milliseconds) before the Toast component autohides.
-   * @type {number}
-   * @default 5000
-   */
-  export let delay = 5000;
+  
 
-  /**
-   * The duration (in milliseconds) for the fade-in and fade-out animation of the Toast component.
-   * @type {number}
-   * @default 200
-   */
-  export let duration = 200;
+  
 
-  /**
-   * Controls whether the Toast component fades in and out.
-   * @type {boolean}
-   * @default true
-   */
-  export let fade = true;
+  
 
-  /**
-   * Specifies the header content of the Toast component.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let header = undefined;
+  
 
-  /**
-   * Controls whether the Toast component is initially open.
-   * @type {boolean}
-   * @default true
-   */
-  export let isOpen = true;
+  
 
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   * @default null
-   */
-  export let theme = null;
+  
 
+  
   /**
-   * Function to toggle the visibility of the Toast component.
-   * @type {null}
-   * @default null
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [autohide] - Controls whether the Toast component autohides after a certain duration.
+   * @property {boolean} [body] - Specifies whether the Toast component includes a body wrapper.
+   * @property {number} [delay] - The time delay (in milliseconds) before the Toast component autohides.
+   * @property {number} [duration] - The duration (in milliseconds) for the fade-in and fade-out animation of the Toast component.
+   * @property {boolean} [fade] - Controls whether the Toast component fades in and out.
+   * @property {string | undefined} [header] - Specifies the header content of the Toast component.
+   * @property {boolean} [isOpen] - Controls whether the Toast component is initially open.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {null} [toggle] - Function to toggle the visibility of the Toast component.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let toggle = null;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    autohide = false,
+    body = false,
+    delay = 5000,
+    duration = 200,
+    fade = true,
+    header = undefined,
+    isOpen = $bindable(true),
+    theme = null,
+    toggle = null,
+    children,
+    ...rest
+  } = $props();
 
   /**
    * The timer ID for the autohide timeout.
    * @type {number}
    */
-  let timeout;
+  let timeout = $state();
 
   onDestroy(() => {
     return () => clearTimeout(timeout);
   });
 
-  $: if (isOpen && autohide) {
-    // @ts-ignore
-    timeout = setTimeout(() => (isOpen = false), delay);
-  }
-
-  $: classes = classnames(className, 'toast', {
-    show: isOpen
+  run(() => {
+    if (isOpen && autohide) {
+      // @ts-ignore
+      timeout = setTimeout(() => (isOpen = false), delay);
+    }
   });
+
+  let classes = $derived(classnames(className, 'toast', {
+    show: isOpen
+  }));
 </script>
 
 {#if isOpen}
   <div
-    {...$$restProps}
+    {...rest}
     class={classes}
     data-bs-theme={theme}
     transition:fadeTrans={{ duration: fade && duration }}
-    on:introstart={() => dispatch('opening')}
-    on:introend={() => dispatch('open')}
-    on:outrostart={() => dispatch('closing')}
-    on:outroend={() => dispatch('close')}
+    onintrostart={() => dispatch('opening')}
+    onintroend={() => dispatch('open')}
+    onoutrostart={() => dispatch('closing')}
+    onoutroend={() => dispatch('close')}
     role="alert"
   >
     {#if header}
@@ -117,10 +105,10 @@
     {/if}
     {#if body}
       <ToastBody>
-        <slot />
+        {@render children?.()}
       </ToastBody>
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </div>
 {/if}

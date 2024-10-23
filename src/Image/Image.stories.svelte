@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import { Image as Images } from './Image.svelte';
 
   export const meta = {
@@ -66,14 +66,16 @@
   ];
 </script>
 
-<Template let:args>
-  {#if args.figure}
-    <Figure caption="This is a figure caption">
+<Template >
+  {#snippet children({ args })}
+    {#if args.figure}
+      <Figure caption="This is a figure caption">
+        <Image {...args} />
+      </Figure>
+    {:else}
       <Image {...args} />
-    </Figure>
-  {:else}
-    <Image {...args} />
-  {/if}
+    {/if}
+  {/snippet}
 </Template>
 
 <Story

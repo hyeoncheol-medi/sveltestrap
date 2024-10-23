@@ -1,22 +1,29 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
   /**
    * Additional CSS class names for the navbar brand.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
+  
   /**
-   * The URL to link to when the navbar brand is clicked.
-   * @type {string}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [href] - The URL to link to when the navbar brand is clicked.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let href = '/';
 
-  $: classes = classnames(className, 'navbar-brand');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', href = '/', children, ...rest } = $props();
+
+  let classes = $derived(classnames(className, 'navbar-brand'));
 </script>
 
-<a {...$$restProps} class={classes} {href} on:click>
-  <slot />
+<a {...rest} class={classes} {href} onclick={bubble('click')}>
+  {@render children?.()}
 </a>

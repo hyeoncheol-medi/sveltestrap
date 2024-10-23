@@ -1,14 +1,23 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   // TODO only allow single backdrop open at once.
   import { classnames } from '../utils';
   import { backdropIn, backdropOut } from '../transitions.js';
-  let className = '';
-  export { className as class };
-  export let isOpen = false;
-  export let fade = true;
-  $: classes = classnames(className, 'offcanvas-backdrop');
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [isOpen]
+   * @property {boolean} [fade]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', isOpen = false, fade = true, ...rest } = $props();
+  let classes = $derived(classnames(className, 'offcanvas-backdrop'));
 </script>
 
 {#if isOpen}
-  <div role="presentation" {...$$restProps} on:click class={classes} class:fade in:backdropIn out:backdropOut />
+  <div role="presentation" {...rest} onclick={bubble('click')} class={classes} class:fade in:backdropIn out:backdropOut></div>
 {/if}

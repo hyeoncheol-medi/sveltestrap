@@ -6,17 +6,19 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
   /**
-   * Name of the icon to display.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [name] - Name of the icon to display.
    */
-  export let name = '';
 
-  $: classes = classnames(className, `bi-${name}`);
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', name = '', ...rest } = $props();
+
+  let classes = $derived(classnames(className, `bi-${name}`));
 </script>
 
-<i {...$$restProps} class={classes} />
+<i {...rest} class={classes}></i>

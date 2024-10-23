@@ -5,43 +5,51 @@
    * Additional CSS class names to apply
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
+
+  
+
+  
+
+  
 
   /**
-   * Determines whether the modal header includes a close button.
-   * @type {boolean | undefined}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean | undefined} [toggle] - Determines whether the modal header includes a close button.
+   * @property {string} [closeAriaLabel] - The aria-label for the close button.
+   * @property {string} [id] - The unique id of the modal header.
+   * @property {any} [children]
+   * @property {import('svelte').Snippet} [children]
+   * @property {import('svelte').Snippet} [close]
    */
-  export let toggle = undefined;
 
-  /**
-   * The aria-label for the close button.
-   * @type {string}
-   */
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    toggle = undefined,
+    closeAriaLabel = 'Close',
+    id = undefined,
+    children = undefined,
+    children,
+    close,
+    ...rest
+  } = $props();
 
-  export let closeAriaLabel = 'Close';
-  /**
-   * The unique id of the modal header.
-   * @type {string}
-   */
-  export let id = undefined;
-
-  export let children = undefined;
-
-  $: classes = classnames(className, 'modal-header');
+  let classes = $derived(classnames(className, 'modal-header'));
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   <h5 class="modal-title" {id}>
     {#if children}
       {children}
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </h5>
-  <slot name="close">
+  {#if close}{@render close()}{:else}
     {#if typeof toggle === 'function'}
-      <button type="button" on:click={toggle} class="btn-close" aria-label={closeAriaLabel} />
+      <button type="button" onclick={toggle} class="btn-close" aria-label={closeAriaLabel}></button>
     {/if}
-  </slot>
+  {/if}
 </div>

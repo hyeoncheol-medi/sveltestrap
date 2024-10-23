@@ -1,35 +1,55 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let active = false;
-  export let disabled = false;
-  export let color = '';
-  export let action = false;
-  export let href = null;
-  export let tag = null;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [active]
+   * @property {boolean} [disabled]
+   * @property {string} [color]
+   * @property {boolean} [action]
+   * @property {any} [href]
+   * @property {any} [tag]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'list-group-item', {
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    active = false,
+    disabled = false,
+    color = '',
+    action = false,
+    href = null,
+    tag = null,
+    children,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, 'list-group-item', {
     active,
     disabled,
     'list-group-item-action': action || tag === 'button',
     [`list-group-item-${color}`]: color
-  });
+  }));
 </script>
 
 {#if href}
-  <a {...$$restProps} class={classes} on:click {href} {disabled} {active}>
-    <slot />
+  <a {...rest} class={classes} onclick={bubble('click')} {href} {disabled} {active}>
+    {@render children?.()}
   </a>
 {:else if tag === 'button'}
-  <button {...$$restProps} class={classes} type="button" on:click {disabled} {active}>
-    <slot />
+  <button {...rest} class={classes} type="button" onclick={bubble('click')} {disabled} {active}>
+    {@render children?.()}
   </button>
 {:else}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-  <li {...$$restProps} class={classes} on:click {disabled} {active}>
-    <slot />
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <li {...rest} class={classes} onclick={bubble('click')} {disabled} {active}>
+    {@render children?.()}
   </li>
 {/if}

@@ -1,18 +1,28 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
   /**
    * Additional CSS class names for the toggler.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'navbar-toggler');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', children, ...rest } = $props();
+  
+
+  let classes = $derived(classnames(className, 'navbar-toggler'));
 </script>
 
-<button {...$$restProps} on:click class={classes}>
-  <slot>
-    <span class="navbar-toggler-icon" />
-  </slot>
+<button {...rest} onclick={bubble('click')} class={classes}>
+  {#if children}{@render children()}{:else}
+    <span class="navbar-toggler-icon"></span>
+  {/if}
 </button>

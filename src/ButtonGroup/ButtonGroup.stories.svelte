@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import ButtonGroup from './ButtonGroup.svelte';
 
   export const meta = {
@@ -77,11 +77,13 @@
 `;
 </script>
 
-<Story name="Basic" let:args={argss} source={basicSource}>
-  <ButtonGroup {...argss}>
-    <Button color={argss.color} outline={argss.outline}>Left</Button>
-    <Button color={argss.color} outline={argss.outline}>Right</Button>
-  </ButtonGroup>
+<Story name="Basic"  source={basicSource}>
+  {#snippet children({ args: argss })}
+    <ButtonGroup {...argss}>
+      <Button color={argss.color} outline={argss.outline}>Left</Button>
+      <Button color={argss.color} outline={argss.outline}>Right</Button>
+    </ButtonGroup>
+  {/snippet}
 </Story>
 
 <Story name="Styles">

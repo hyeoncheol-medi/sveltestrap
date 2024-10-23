@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   export const meta = {
     title: 'Stories/Validation',
     parameters: {},
@@ -11,7 +11,7 @@
   import { Story, Source, Template } from '@storybook/addon-svelte-csf';
   import { Button, Form, FormGroup, Input } from '@sveltestrap/sveltestrap';
 
-  let validated = false;
+  let validated = $state(false);
 </script>
 
 <Template>

@@ -1,30 +1,56 @@
 <script>
+  import { createBubbler, handlers } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { getContext } from 'svelte';
   import { classnames } from '../utils';
 
   const context = getContext('dropdownContext');
 
-  let className = '';
-  export { className as class };
-  export let ariaLabel = 'Toggle Dropdown';
-  export let active = false;
-  export let block = false;
-  export let caret = false;
-  export let color = 'secondary';
-  export let disabled = false;
-  export let inner = undefined;
-  export let nav = false;
-  export let outline = false;
-  export let size = '';
-  export let split = false;
-  export let tag = null;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [ariaLabel]
+   * @property {boolean} [active]
+   * @property {boolean} [block]
+   * @property {boolean} [caret]
+   * @property {string} [color]
+   * @property {boolean} [disabled]
+   * @property {any} [inner]
+   * @property {boolean} [nav]
+   * @property {boolean} [outline]
+   * @property {string} [size]
+   * @property {boolean} [split]
+   * @property {any} [tag]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, {
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    ariaLabel = 'Toggle Dropdown',
+    active = false,
+    block = false,
+    caret = false,
+    color = 'secondary',
+    disabled = false,
+    inner = $bindable(undefined),
+    nav = false,
+    outline = false,
+    size = '',
+    split = false,
+    tag = null,
+    children,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, {
     'dropdown-toggle': caret || split,
     'dropdown-toggle-split': split,
     'nav-link': nav,
     show: $context.isOpen
-  });
+  }));
 
   function toggleButton(e) {
     if (disabled) {
@@ -39,74 +65,70 @@
     $context.toggle(e);
   }
 
-  $: btnClasses = classnames(
+  let btnClasses = $derived(classnames(
     classes,
     'btn',
     `btn${outline ? '-outline' : ''}-${color}`,
     size ? `btn-${size}` : false,
     block ? 'd-block w-100' : false,
     { active }
-  );
+  ));
 </script>
 
 {#if nav}
   <a
     use:$context.popperRef
-    {...$$restProps}
+    {...rest}
     bind:this={inner}
-    on:click
-    on:click={toggleButton}
+    onclick={handlers(bubble('click'), toggleButton)}
     href="#nav"
     aria-expanded={$context.isOpen}
     class={classes}
   >
-    <slot>
+    {#if children}{@render children()}{:else}
       <span class="visually-hidden">{ariaLabel}</span>
-    </slot>
+    {/if}
   </a>
 {:else if tag === 'div'}
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     use:$context.popperRef
-    {...$$restProps}
+    {...rest}
     bind:this={inner}
-    on:click
-    on:click={toggleButton}
+    onclick={handlers(bubble('click'), toggleButton)}
     aria-expanded={$context.isOpen}
     class={classes}
   >
-    <slot>
+    {#if children}{@render children()}{:else}
       <span class="visually-hidden">{ariaLabel}</span>
-    </slot>
+    {/if}
   </div>
 {:else if tag === 'span'}
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <span
     use:$context.popperRef
-    {...$$restProps}
+    {...rest}
     bind:this={inner}
-    on:click
-    on:click={toggleButton}
+    onclick={handlers(bubble('click'), toggleButton)}
     aria-expanded={$context.isOpen}
     class={classes}
   >
-    <slot>
+    {#if children}{@render children()}{:else}
       <span class="visually-hidden">{ariaLabel}</span>
-    </slot>
+    {/if}
   </span>
 {:else}
   <button
     use:$context.popperRef
-    {...$$restProps}
+    {...rest}
     bind:this={inner}
     type="button"
-    on:click
-    on:click={toggleButton}
+    onclick={handlers(bubble('click'), toggleButton)}
     aria-expanded={$context.isOpen}
     class={btnClasses}
   >
-    <slot>
+    {#if children}{@render children()}{:else}
       <span class="visually-hidden">{ariaLabel}</span>
-    </slot>
+    {/if}
   </button>
 {/if}

@@ -5,57 +5,54 @@
   import { TableFooter } from '../TableFooter';
   import { TableHeader } from '../TableHeader';
 
-  let className = '';
   /**
    * Represents a custom class name for the component.
    * @type {string}
    */
 
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
   /**
-   * Represents the size of the component.
-   * @type {string}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string} [size] - Represents the size of the component.
+   * @property {boolean} [bordered] - Indicates whether the component should have a bordered style.
+   * @property {boolean} [borderless] - Indicates whether the component should have a borderless style.
+   * @property {boolean} [striped] - Indicates whether the component should have a striped style.
+   * @property {boolean} [hover] - Indicates whether the component should have a hover effect.
+   * @property {boolean} [responsive] - Indicates whether the component should be responsive.
+   * @property {Object[]} [rows] - Represents the number of rows for the component.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let size = '';
 
-  /**
-   * Indicates whether the component should have a bordered style.
-   * @type {boolean}
-   */
-  export let bordered = false;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    size = '',
+    bordered = false,
+    borderless = false,
+    striped = false,
+    hover = false,
+    responsive = false,
+    rows = undefined,
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * Indicates whether the component should have a borderless style.
-   * @type {boolean}
-   */
-  export let borderless = false;
-
-  /**
-   * Indicates whether the component should have a striped style.
-   * @type {boolean}
-   */
-  export let striped = false;
-
-  /**
-   * Indicates whether the component should have a hover effect.
-   * @type {boolean}
-   */
-  export let hover = false;
-
-  /**
-   * Indicates whether the component should be responsive.
-   * @type {boolean}
-   */
-  export let responsive = false;
-
-  /**
-   * Represents the number of rows for the component.
-   * @type {Object[]}
-   */
-  export let rows = undefined;
-
-  $: classes = classnames(
+  let classes = $derived(classnames(
     className,
     'table',
     size ? 'table-' + size : false,
@@ -63,30 +60,30 @@
     borderless ? 'table-borderless' : false,
     striped ? 'table-striped' : false,
     hover ? 'table-hover' : false
-  );
+  ));
 </script>
 
 <ResponsiveContainer {responsive}>
-  <table {...$$restProps} class={classes}>
+  <table {...rest} class={classes}>
     {#if rows}
       <Colgroup>
-        <slot />
+        {@render children?.()}
       </Colgroup>
       <TableHeader>
-        <slot />
+        {@render children?.()}
       </TableHeader>
       <tbody>
         {#each rows as row}
           <tr>
-            <slot {row} />
+            {@render children?.({ row, })}
           </tr>
         {/each}
       </tbody>
       <TableFooter>
-        <slot />
+        {@render children?.()}
       </TableFooter>
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </table>
 </ResponsiveContainer>

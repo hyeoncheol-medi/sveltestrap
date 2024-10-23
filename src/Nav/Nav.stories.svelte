@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Nav from './Nav.svelte';
 
   export const meta = {
@@ -92,7 +92,7 @@
 
   import { NavItem, Dropdown, DropdownItem, DropdownToggle, DropdownMenu, NavLink } from '@sveltestrap/sveltestrap';
 
-  let isOpen = false;
+  let isOpen = $state(false);
 
   let basicSource = `<script lang="ts">
   import { Nav, NavItem, NavLink } from '@sveltestrap/sveltestrap';
@@ -127,36 +127,38 @@
 </Nav>`;
 </script>
 
-<Story name="Basic" let:args source={basicSource}>
-  <div class="nav-example">
-    <p>List Based</p>
+<Story name="Basic"  source={basicSource}>
+  {#snippet children({ args })}
+    <div class="nav-example">
+      <p>List Based</p>
 
-    <Nav {...args} color="dark">
-      <NavItem active>
+      <Nav {...args} color="dark">
+        <NavItem active>
+          <NavLink href="#">Link</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="#">Link</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="#">Another Link</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink disabled href="#">Disabled Link</NavLink>
+        </NavItem>
+      </Nav>
+
+      <hr />
+
+      <p>Link Based</p>
+
+      <Nav {...args} color="dark">
+        <NavLink href="#" active>Link</NavLink>
         <NavLink href="#">Link</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="#">Link</NavLink>
-      </NavItem>
-      <NavItem>
         <NavLink href="#">Another Link</NavLink>
-      </NavItem>
-      <NavItem>
         <NavLink disabled href="#">Disabled Link</NavLink>
-      </NavItem>
-    </Nav>
-
-    <hr />
-
-    <p>Link Based</p>
-
-    <Nav {...args} color="dark">
-      <NavLink href="#" active>Link</NavLink>
-      <NavLink href="#">Link</NavLink>
-      <NavLink href="#">Another Link</NavLink>
-      <NavLink disabled href="#">Disabled Link</NavLink>
-    </Nav>
-  </div>
+      </Nav>
+    </div>
+  {/snippet}
 </Story>
 
 <Story name="Tabs">

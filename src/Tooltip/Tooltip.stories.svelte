@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Tooltip from './Tooltip.svelte';
 
   export const meta = {
@@ -91,18 +91,20 @@
 
   const placements = ['top', 'right', 'left', 'bottom'];
 
-  let isOpen = false;
+  let isOpen = $state(false);
 
-  let myHtmlElementA, myHtmlElementB;
+  let myHtmlElementA = $state(), myHtmlElementB = $state();
 </script>
 
-<Template let:args>
-  {#key args}
-    <div class="mt-3">
-      <Button id={`btn-${args.placement}`} color="primary">Show {args.placement}</Button>
-      <Tooltip {...args} target={`btn-${args.placement}`} args.placement>{args.placement} tooltip!</Tooltip>
-    </div>
-  {/key}
+<Template >
+  {#snippet children({ args })}
+    {#key args}
+      <div class="mt-3">
+        <Button id={`btn-${args.placement}`} color="primary">Show {args.placement}</Button>
+        <Tooltip {...args} target={`btn-${args.placement}`} args.placement>{args.placement} tooltip!</Tooltip>
+      </div>
+    {/key}
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

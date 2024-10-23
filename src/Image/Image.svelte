@@ -7,47 +7,43 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
+
+  
   /**
-   * Alternative text for the image
-   * @type {string | undefined}
-   * @default undefined
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {string | undefined} [alt] - Alternative text for the image
+   * @property {boolean} [figure] - Determines if the image should apply the figure class
+   * @property {boolean} [fluid] - Fluid image indicator flag
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {boolean} [thumbnail] - Thumbnail image indicator flag
    */
-  export let alt = undefined;
 
-  /**
-   * Determines if the image should apply the figure class
-   * @type {boolean}
-   */
-  export let figure = getContext('figure');
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    alt = undefined,
+    figure = getContext('figure'),
+    fluid = false,
+    theme = null,
+    thumbnail = false,
+    ...rest
+  } = $props();
 
-  /**
-   * Fluid image indicator flag
-   * @type {boolean}
-   * @default false
-   */
-  export let fluid = false;
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   * @default null
-   */
-  export let theme = null;
-
-  /**
-   * Thumbnail image indicator flag
-   * @type {boolean}
-   */
-  export let thumbnail = false;
-
-  $: classes = classnames(className, {
+  let classes = $derived(classnames(className, {
     'figure-img': figure,
     'img-fluid': fluid,
     'img-thumbnail': thumbnail
-  });
+  }));
 </script>
 
-<img {alt} {...$$restProps} data-bs-theme={theme} class={classes} />
+<img {alt} {...rest} data-bs-theme={theme} class={classes} />

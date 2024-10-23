@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Fade from './Fade.svelte';
 
   export const meta = {
@@ -27,22 +27,24 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { Button, Card } from '@sveltestrap/sveltestrap';
 
-  let isOpen = false;
-  let status = 'Closed';
+  let isOpen = $state(false);
+  let status = $state('Closed');
 </script>
 
-<Template let:args>
-  <div class="fade-example">
-    <Button color="primary" on:click={() => (isOpen = !isOpen)} class="mb-3">Toggle</Button>
-    <Fade {isOpen}>
-      <div class="card-width">
-        <Card body>
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
-          keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-        </Card>
-      </div>
-    </Fade>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="fade-example">
+      <Button color="primary" on:click={() => (isOpen = !isOpen)} class="mb-3">Toggle</Button>
+      <Fade {isOpen}>
+        <div class="card-width">
+          <Card body>
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
+            keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+          </Card>
+        </div>
+      </Fade>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />

@@ -6,10 +6,23 @@
 
   const dispatch = createEventDispatcher();
 
-  let className = '';
-  export { className as class };
-  export let pills = false;
-  export let vertical = false;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [pills]
+   * @property {boolean} [vertical]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    pills = false,
+    vertical = false,
+    children,
+    ...rest
+  } = $props();
 
   const activeTabId = writable();
   setContext('tabContent', {
@@ -20,14 +33,14 @@
     }
   });
 
-  $: classes = classnames('tab-content', className, {
+  let classes = $derived(classnames('tab-content', className, {
     'd-flex align-items-start': vertical
-  });
+  }));
 </script>
 
-<div {...$$restProps} class={classes}>
+<div {...rest} class={classes}>
   <TabHeader class={classnames({ 'me-3': vertical })} {pills} tabs={!pills} {vertical}>
-    <slot />
+    {@render children?.()}
   </TabHeader>
-  <slot />
+  {@render children?.()}
 </div>

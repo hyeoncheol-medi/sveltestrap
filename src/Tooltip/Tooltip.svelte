@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { onDestroy, onMount } from 'svelte';
   import { createPopper } from '@popperjs/core';
   import { classnames, uuid } from '../utils';
@@ -9,82 +11,75 @@
    * Additional CSS class names for the tooltip.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
-  /**
-   * Flag to enable animation for the tooltip.
-   * @type {boolean}
-   */
-  export let animation = true;
+  
 
-  /**
-   * The content to be displayed within the tooltip.
-   * @type {string}
-   */
-  export let children = '';
+  
 
-  /**
-   * The container in which the tooltip should be rendered.
-   * @type {string}
-   */
-  export let container = undefined;
-  /**
-   * Unique identifier for the tooltip.
-   * @type {string}
-   */
-  export let id = `tooltip_${uuid()}`;
+  
+  
 
-  /**
-   * Controls the visibility of the tooltip.
-   * @type {boolean}
-   */
-  export let isOpen = false;
+  
 
-  /**
-   * The preferred placement of the tooltip.
-   * @type {string}
-   */
-  export let placement = 'top';
+  
 
-  /**
-   * The target element to which the tooltip is attached.
-   * @type {string | HTMLElement}
-   */
-  export let target = '';
+  
 
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
+  
 
+  
   /**
-   * The delay for showing the tooltip (in milliseconds).
-   * @type {string | number}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [animation] - Flag to enable animation for the tooltip.
+   * @property {string} [children] - The content to be displayed within the tooltip.
+   * @property {string} [container] - The container in which the tooltip should be rendered.
+   * @property {string} [id] - Unique identifier for the tooltip.
+   * @property {boolean} [isOpen] - Controls the visibility of the tooltip.
+   * @property {string} [placement] - The preferred placement of the tooltip.
+   * @property {string | HTMLElement} [target] - The target element to which the tooltip is attached.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {string | number} [delay] - The delay for showing the tooltip (in milliseconds).
+   * @property {import('svelte').Snippet} [children]
    */
-  export let delay = 0;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    animation = true,
+    children = '',
+    container = undefined,
+    id = `tooltip_${uuid()}`,
+    isOpen = $bindable(false),
+    placement = 'top',
+    target = '',
+    theme = null,
+    delay = 0,
+    children,
+    ...rest
+  } = $props();
 
   /**
    * @type {string}
    */
-  let bsPlacement;
+  let bsPlacement = $state();
   /**
    * @type {object}
    */
-  let popperInstance;
+  let popperInstance = $state();
   /**
    * @type {string}
    */
-  let popperPlacement = placement;
+  let popperPlacement = $state(placement);
   /**
    * @type {HTMLDivElement | null}
    */
-  let targetEl;
+  let targetEl = $state();
   /**
    * @type {HTMLDivElement | null}
    */
-  let tooltipEl;
+  let tooltipEl = $state();
   /**
    * @type {string}
    */
@@ -100,20 +95,6 @@
     }
   };
 
-  $: {
-    if (isOpen && tooltipEl) {
-      // @ts-ignore
-      popperInstance = createPopper(targetEl, tooltipEl, {
-        placement,
-        modifiers: [checkPopperPlacement]
-      });
-    } else if (popperInstance) {
-      // @ts-ignore
-      popperInstance.destroy();
-      // @ts-ignore
-      popperInstance = undefined;
-    }
-  }
 
   const open = () => {
     clearTimeout(showTimer);
@@ -132,10 +113,6 @@
     clearTimeout(showTimer);
   });
 
-  $: if (target) {
-    unregisterEventListeners();
-    registerEventListeners();
-  }
 
   function registerEventListeners() {
     // eslint-disable-next-line eqeqeq
@@ -184,15 +161,39 @@
     }
   }
 
-  $: if (targetEl) {
-    if (isOpen) {
-      targetEl.setAttribute('aria-describedby', id);
-    } else {
-      targetEl.removeAttribute('aria-describedby');
-    }
-  }
 
-  $: {
+
+
+  run(() => {
+    if (isOpen && tooltipEl) {
+      // @ts-ignore
+      popperInstance = createPopper(targetEl, tooltipEl, {
+        placement,
+        modifiers: [checkPopperPlacement]
+      });
+    } else if (popperInstance) {
+      // @ts-ignore
+      popperInstance.destroy();
+      // @ts-ignore
+      popperInstance = undefined;
+    }
+  });
+  run(() => {
+    if (target) {
+      unregisterEventListeners();
+      registerEventListeners();
+    }
+  });
+  run(() => {
+    if (targetEl) {
+      if (isOpen) {
+        targetEl.setAttribute('aria-describedby', id);
+      } else {
+        targetEl.removeAttribute('aria-describedby');
+      }
+    }
+  });
+  run(() => {
     if (popperPlacement === 'left') {
       bsPlacement = 'start';
     } else if (popperPlacement === 'right') {
@@ -200,24 +201,23 @@
     } else {
       bsPlacement = popperPlacement;
     }
-  }
-
-  $: classes = classnames(
+  });
+  let classes = $derived(classnames(
     className,
     'tooltip',
     `bs-tooltip-${bsPlacement}`,
     animation ? 'fade' : false,
     isOpen ? 'show' : false
-  );
-
-  $: outer = container === 'inline' ? InlineContainer : Portal;
+  ));
+  let outer = $derived(container === 'inline' ? InlineContainer : Portal);
 </script>
 
 {#if isOpen}
-  <svelte:component this={outer}>
+  {@const SvelteComponent = outer}
+  <SvelteComponent>
     <div
       bind:this={tooltipEl}
-      {...$$restProps}
+      {...rest}
       class={classes}
       {id}
       role="tooltip"
@@ -225,14 +225,14 @@
       data-bs-delay={delay}
       x-placement={popperPlacement}
     >
-      <div class="tooltip-arrow" data-popper-arrow />
+      <div class="tooltip-arrow" data-popper-arrow></div>
       <div class="tooltip-inner">
         {#if children}
           {children}
         {:else}
-          <slot />
+          {@render children?.()}
         {/if}
       </div>
     </div>
-  </svelte:component>
+  </SvelteComponent>
 {/if}

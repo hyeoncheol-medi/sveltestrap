@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Dropdown from './Dropdown.svelte';
 
   export const meta = {
@@ -116,7 +116,7 @@
     Navbar
   } from '@sveltestrap/sveltestrap';
 
-  let isOpen = false;
+  let isOpen = $state(false);
 
   const directions = ['down', 'up', 'left', 'right', 'start', 'end'];
   const sizes = ['sm', '', 'lg'];
@@ -135,23 +135,25 @@
 </Dropdown>`;
 </script>
 
-<Template let:args>
-  <div class="dropdown-example">
-    <div class="drop-height">
-      <Dropdown {...args}>
-        <DropdownToggle color="primary" caret>Drop{args.direction}</DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem header>Header</DropdownItem>
-          <DropdownItem>Some Action</DropdownItem>
-          <DropdownItem disabled>Action (disabled)</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem>Foo Action</DropdownItem>
-          <DropdownItem>Bar Action</DropdownItem>
-          <DropdownItem>Quo Action</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+<Template >
+  {#snippet children({ args })}
+    <div class="dropdown-example">
+      <div class="drop-height">
+        <Dropdown {...args}>
+          <DropdownToggle color="primary" caret>Drop{args.direction}</DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem header>Header</DropdownItem>
+            <DropdownItem>Some Action</DropdownItem>
+            <DropdownItem disabled>Action (disabled)</DropdownItem>
+            <DropdownItem divider />
+            <DropdownItem>Foo Action</DropdownItem>
+            <DropdownItem>Bar Action</DropdownItem>
+            <DropdownItem>Quo Action</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" source={basicSource} />

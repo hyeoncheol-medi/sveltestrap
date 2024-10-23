@@ -4,12 +4,15 @@
   import { NavLink } from '../NavLink';
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let active = false;
-  export let disabled = false;
-  export let tab = undefined;
-  export let tabId = undefined;
+  let {
+    class: klass = '',
+    active = false,
+    disabled = false,
+    tab = undefined,
+    tabId = undefined,
+    tab: tabSnippet,
+    children
+  } = $props();
 
   const tabs = getContext('tabs');
   const { activeTabId, setActiveTab } = getContext('tabContent');
@@ -18,23 +21,33 @@
     if (active) setActiveTab(tabId);
   });
 
-  let tabOpen = active;
-  $: if ($activeTabId !== undefined) tabOpen = $activeTabId === tabId;
-  $: classes = classnames('tab-pane', className, {
+  let tabOpen = $state(active);
+
+  $effect(() => {
+    if ($activeTabId !== undefined) {
+      tabOpen = $activeTabId === tabId;
+    }
+  });
+
+  const classes = $derived(classnames('tab-pane', klass, {
     active: tabOpen,
     show: tabOpen
-  });
+  }));
 </script>
 
 {#if tabs}
   <NavItem>
-    <NavLink active={tabOpen} {disabled} on:click={() => setActiveTab(tabId)}>
+    <NavLink
+      active={tabOpen}
+      disabled={disabled}
+      onclick={() => setActiveTab(tabId)}
+    >
       {#if tab}{tab}{/if}
-      <slot name="tab" />
+      {@render tabSnippet?.()}
     </NavLink>
   </NavItem>
 {:else}
   <div {...$$restProps} class={classes}>
-    <slot />
+    {@render children?.()}
   </div>
 {/if}

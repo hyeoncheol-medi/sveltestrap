@@ -6,12 +6,19 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'input-group-text');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', children, ...rest } = $props();
+  
+
+  let classes = $derived(classnames(className, 'input-group-text'));
 </script>
 
-<span {...$$restProps} class={classes}>
-  <slot />
+<span {...rest} class={classes}>
+  {@render children?.()}
 </span>

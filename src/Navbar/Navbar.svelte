@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { setContext } from 'svelte';
   import { classnames } from '../utils';
   import { Container } from '../Container';
@@ -11,56 +13,51 @@
    * Additional CSS class names for the navbar.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
-  /**
-   * Determines the container type within the navbar.
-   * @type {'fluid' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'}
-   */
-  export let container = 'fluid';
+  
 
-  /**
-   * The color theme for the navbar.
-   * @type {string}
-   */
-  export let color = '';
+  
 
-  /**
-   * Flag to indicate if dark theme should be applied.
-   * @type {boolean}
-   */
-  export let dark = false;
+  
 
-  /**
-   * Determines when the navbar should expand.
-   * @type {boolean | string}
-   */
-  export let expand = false || '';
+  
 
-  /**
-   * Fixes the navbar at the top or bottom of the viewport.
-   * @type {string}
-   */
-  export let fixed = '';
+  
 
-  /**
-   * Flag to indicate if light theme should be applied.
-   * @type {boolean}
-   */
-  export let light = false;
+  
 
-  /**
-   * Makes the navbar stick to the top of the viewport.
-   * @type {string}
-   */
-  export let sticky = '';
+  
 
+  
   /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {'fluid' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'} [container] - Determines the container type within the navbar.
+   * @property {string} [color] - The color theme for the navbar.
+   * @property {boolean} [dark] - Flag to indicate if dark theme should be applied.
+   * @property {boolean | string} [expand] - Determines when the navbar should expand.
+   * @property {string} [fixed] - Fixes the navbar at the top or bottom of the viewport.
+   * @property {boolean} [light] - Flag to indicate if light theme should be applied.
+   * @property {string} [sticky] - Makes the navbar stick to the top of the viewport.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let theme = null;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    container = 'fluid',
+    color = '',
+    dark = false,
+    expand = false || '',
+    fixed = '',
+    light = false,
+    sticky = '',
+    theme = $bindable(null),
+    children,
+    ...rest
+  } = $props();
 
   let containerProps = {
     sm: container === 'sm',
@@ -88,21 +85,23 @@
     return `navbar-expand-${expand}`;
   }
 
-  $: theme = dark ? 'dark' : light ? 'light' : theme;
+  run(() => {
+    theme = dark ? 'dark' : light ? 'light' : theme;
+  });
 
-  $: classes = classnames(className, 'navbar', getExpandClass(expand), {
+  let classes = $derived(classnames(className, 'navbar', getExpandClass(expand), {
     [`bg-${color}`]: color,
     [`fixed-${fixed}`]: fixed,
     [`sticky-${sticky}`]: sticky
-  });
+  }));
 </script>
 
-<nav {...$$restProps} class={classes} data-bs-theme={theme}>
+<nav {...rest} class={classes} data-bs-theme={theme}>
   {#if container}
     <Container {...containerProps}>
-      <slot />
+      {@render children?.()}
     </Container>
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </nav>

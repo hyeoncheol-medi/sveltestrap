@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Toast from './Toast.svelte';
 
   export const meta = {
@@ -153,8 +153,8 @@
 
   const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-  let isOpen = false;
-  let status = 'Closed';
+  let isOpen = $state(false);
+  let status = $state('Closed');
 
   function toggle() {
     isOpen = !isOpen;
@@ -164,7 +164,7 @@
     isOpen = true;
   }
 
-  let seconds = 5;
+  let seconds = $state(5);
   let countdownInterval = null;
 
   function startCountdown() {
@@ -196,22 +196,24 @@
 </div>`;
 </script>
 
-<Template let:args>
-  <div class="toast-width">
-    <div class="p-3 bg-{args.color} mb-3 rounded">
-      <Toast
-        {...args}
-        theme={args.theme || null}
-        style="--bs-toast-color: {args.theme === 'dark' ? '#fff' : '#111'};"
-        class="me-1"
-      >
-        <ToastHeader>Sveltestrap</ToastHeader>
-        <ToastBody>
-          This is a toast on a {args.color} background — check it out!
-        </ToastBody>
-      </Toast>
+<Template >
+  {#snippet children({ args })}
+    <div class="toast-width">
+      <div class="p-3 bg-{args.color} mb-3 rounded">
+        <Toast
+          {...args}
+          theme={args.theme || null}
+          style="--bs-toast-color: {args.theme === 'dark' ? '#fff' : '#111'};"
+          class="me-1"
+        >
+          <ToastHeader>Sveltestrap</ToastHeader>
+          <ToastBody>
+            This is a toast on a {args.color} background — check it out!
+          </ToastBody>
+        </Toast>
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" source={basicStorySource} />
@@ -235,7 +237,9 @@
       <div class="p-2 mb-3">
         <Toast class="me-1">
           <ToastHeader>
-            <Icon slot="icon" name="emoji-sunglasses" class="me-2" />
+            {#snippet icon()}
+                        <Icon  name="emoji-sunglasses" class="me-2" />
+                      {/snippet}
             Sveltestrap
           </ToastHeader>
           <ToastBody>This is a toast with a custom icon.</ToastBody>

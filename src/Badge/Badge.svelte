@@ -1,92 +1,70 @@
 <script>
   import { classnames } from '../utils';
 
-  /**
-   * Text to be read by screen readers.
-   * @type {string}
-   * @default ''
-   */
-  export let ariaLabel = '';
+  
 
-  /**
-   * Determines if the badge should have a border
-   * @type {boolean | string}
-   * @default false
-   */
-  export let border = false;
+  
 
   /**
    * Additional CSS classes for container element.
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
   /**
-   * The content to be displayed within the badge.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [ariaLabel] - Text to be read by screen readers.
+   * @property {boolean | string} [border] - Determines if the badge should have a border
+   * @property {string} [class]
+   * @property {string} [children] - The content to be displayed within the badge.
+   * @property {string} [color] - The color theme for the badge.
+   * @property {string} [href] - The href attribute for the badge, which turns it into a link if provided.
+   * @property {boolean} [indicator] - Create a circular indicator for absolute positioned badge.
+   * @property {boolean} [pill] - Flag to indicate if the badge should have a pill shape.
+   * @property {boolean} [positioned] - Flag to indicate if the badge should be absolutely positioned.
+   * @property {string} [placement] - Classes determining where the badge should be absolutely positioned.
+   * @property {boolean | string} [shadow] - Determines if the badge should have a shadow
+   * @property {string | undefined} [theme] - The theme name override to apply to this component instance.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let children = '';
 
-  /**
-   * The color theme for the badge.
-   * @type {string}
-   * @default 'secondary'
-   */
-  export let color = 'secondary';
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    ariaLabel = '',
+    border = false,
+    class: className = '',
+    children = '',
+    color = 'secondary',
+    href = '',
+    indicator = false,
+    pill = false,
+    positioned = false,
+    placement = 'top-0 start-100',
+    shadow = false,
+    theme = undefined,
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * The href attribute for the badge, which turns it into a link if provided.
-   * @type {string}
-   * @default ''
-   */
-  export let href = '';
-
-  /**
-   * Create a circular indicator for absolute positioned badge.
-   * @type {boolean}
-   * @default false
-   */
-  export let indicator = false;
-
-  /**
-   * Flag to indicate if the badge should have a pill shape.
-   * @type {boolean}
-   * @default false
-   */
-  export let pill = false;
-
-  /**
-   * Flag to indicate if the badge should be absolutely positioned.
-   * @type {boolean}
-   * @default false
-   */
-  export let positioned = false;
-
-  /**
-   * Classes determining where the badge should be absolutely positioned.
-   * @type {string}
-   * @default 'top-0 start-100'
-   */
-  export let placement = 'top-0 start-100';
-
-  /**
-   * Determines if the badge should have a shadow
-   * @type {boolean | string}
-   * @default false
-   */
-  export let shadow = false;
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | undefined}
-   * @default undefined
-   */
-  export let theme = undefined;
-
-  $: classes = classnames(
+  let classes = $derived(classnames(
     'badge',
     `text-bg-${color}`,
     pill ? 'rounded-pill' : false,
@@ -96,26 +74,26 @@
     border ? (typeof border === 'string' ? border : 'border') : false,
     shadow ? (typeof shadow === 'string' ? shadow : 'shadow') : false,
     className
-  );
+  ));
 </script>
 
 {#if href}
-  <a {...$$restProps} {href} class={classes} data-bs-theme={theme}>
+  <a {...rest} {href} class={classes} data-bs-theme={theme}>
     {#if children}
       {children}
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
     {#if positioned || indicator}
       <span class="visually-hidden">{ariaLabel}</span>
     {/if}
   </a>
 {:else}
-  <span {...$$restProps} class={classes} data-bs-theme={theme}>
+  <span {...rest} class={classes} data-bs-theme={theme}>
     {#if children}
       {children}
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
     {#if positioned || indicator}
       <span class="visually-hidden">{ariaLabel}</span>

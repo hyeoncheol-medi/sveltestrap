@@ -1,50 +1,74 @@
 <script>
+  import { run, createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let next = false;
-  export let previous = false;
-  export let first = false;
-  export let last = false;
-  export let ariaLabel = '';
-  export let href = '';
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [next]
+   * @property {boolean} [previous]
+   * @property {boolean} [first]
+   * @property {boolean} [last]
+   * @property {string} [ariaLabel]
+   * @property {string} [href]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'page-link');
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    next = false,
+    previous = false,
+    first = false,
+    last = false,
+    ariaLabel = '',
+    href = '',
+    children,
+    ...rest
+  } = $props();
 
-  let defaultAriaLabel;
+  let classes = $derived(classnames(className, 'page-link'));
 
-  $: if (previous) {
-    defaultAriaLabel = 'Previous';
-  } else if (next) {
-    defaultAriaLabel = 'Next';
-  } else if (first) {
-    defaultAriaLabel = 'First';
-  } else if (last) {
-    defaultAriaLabel = 'Last';
-  }
+  let defaultAriaLabel = $state();
 
-  $: realLabel = ariaLabel || defaultAriaLabel;
+  run(() => {
+    if (previous) {
+      defaultAriaLabel = 'Previous';
+    } else if (next) {
+      defaultAriaLabel = 'Next';
+    } else if (first) {
+      defaultAriaLabel = 'First';
+    } else if (last) {
+      defaultAriaLabel = 'Last';
+    }
+  });
 
-  let defaultCaret;
-  $: if (previous) {
-    defaultCaret = '\u2039';
-  } else if (next) {
-    defaultCaret = '\u203A';
-  } else if (first) {
-    defaultCaret = '\u00ab';
-  } else if (last) {
-    defaultCaret = '\u00bb';
-  }
+  let realLabel = $derived(ariaLabel || defaultAriaLabel);
+
+  let defaultCaret = $state();
+  run(() => {
+    if (previous) {
+      defaultCaret = '\u2039';
+    } else if (next) {
+      defaultCaret = '\u203A';
+    } else if (first) {
+      defaultCaret = '\u00ab';
+    } else if (last) {
+      defaultCaret = '\u00bb';
+    }
+  });
 </script>
 
-<a {...$$restProps} class={classes} on:click {href}>
+<a {...rest} class={classes} onclick={bubble('click')} {href}>
   {#if previous || next || first || last}
     <span aria-hidden="true">
-      <slot>{defaultCaret}</slot>
+      {#if children}{@render children()}{:else}{defaultCaret}{/if}
     </span>
     <span class="visually-hidden">{realLabel}</span>
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </a>

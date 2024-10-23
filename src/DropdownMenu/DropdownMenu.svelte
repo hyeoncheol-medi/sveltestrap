@@ -4,10 +4,23 @@
 
   const context = getContext('dropdownContext');
 
-  let className = '';
-  export { className as class };
-  export let end = false;
-  export let right = false;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [end]
+   * @property {boolean} [right]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    end = false,
+    right = false,
+    children,
+    ...rest
+  } = $props();
 
   const popperPlacement = (direction, end) => {
     let prefix = direction;
@@ -24,7 +37,7 @@
     return `${prefix}-${suffix}`;
   };
 
-  $: popperOptions = {
+  let popperOptions = $derived({
     modifiers: [
       { name: 'flip' },
       {
@@ -35,19 +48,19 @@
       }
     ],
     placement: popperPlacement($context.direction, end || right)
-  };
+  });
 
-  $: classes = classnames(className, 'dropdown-menu', {
+  let classes = $derived(classnames(className, 'dropdown-menu', {
     'dropdown-menu-end': end || right,
     show: $context.isOpen
-  });
+  }));
 </script>
 
 <ul
-  {...$$restProps}
+  {...rest}
   class={classes}
   data-bs-popper={$context.inNavbar ? 'static' : undefined}
   use:$context.popperContent={popperOptions}
 >
-  <slot />
+  {@render children?.()}
 </ul>

@@ -5,68 +5,59 @@
    * Additional CSS class names for the <ul> element.
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
-  /**
-   * Indicates whether the nav should be styled as tabs.
-   * @type {boolean}
-   */
-  export let tabs = false;
+  
 
-  /**
-   * Indicates whether the nav should be styled as pills.
-   * @type {boolean}
-   */
-  export let pills = false;
+  
 
-  /**
-   * Controls vertical orientation of the nav.
-   * @type {string}
-   */
-  export let vertical = '';
+  
 
-  /**
-   * Controls horizontal alignment of the nav items.
-   * @type {string}
-   */
-  export let horizontal = '';
+  
 
-  /**
-   * Indicates whether the nav should be justified.
-   * @type {boolean}
-   */
-  export let justified = false;
+  
 
-  /**
-   * Indicates whether the nav should fill the available space.
-   * @type {boolean}
-   */
-  export let fill = false;
+  
 
-  /**
-   * Indicates whether the nav is part of a navbar.
-   * @type {boolean}
-   */
-  export let navbar = false;
+  
 
-  /**
-   * Indicates whether the nav is part of a card header.
-   * @type {boolean}
-   */
-  export let card = false;
+  
 
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
+  
 
+  
   /**
-   * Indicates whether the nav should have an underline style.
-   * @type {boolean}
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [tabs] - Indicates whether the nav should be styled as tabs.
+   * @property {boolean} [pills] - Indicates whether the nav should be styled as pills.
+   * @property {string} [vertical] - Controls vertical orientation of the nav.
+   * @property {string} [horizontal] - Controls horizontal alignment of the nav items.
+   * @property {boolean} [justified] - Indicates whether the nav should be justified.
+   * @property {boolean} [fill] - Indicates whether the nav should fill the available space.
+   * @property {boolean} [navbar] - Indicates whether the nav is part of a navbar.
+   * @property {boolean} [card] - Indicates whether the nav is part of a card header.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {boolean} [underline] - Indicates whether the nav should have an underline style.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let underline = false;
+
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    tabs = false,
+    pills = false,
+    vertical = '',
+    horizontal = '',
+    justified = false,
+    fill = false,
+    navbar = false,
+    card = false,
+    theme = null,
+    underline = false,
+    children,
+    ...rest
+  } = $props();
 
   /**
    * Computes the class for vertical orientation based on the provided value.
@@ -89,7 +80,7 @@
    * Computed class names for the <ul> element based on the component's props.
    * @type {string}
    */
-  $: classes = classnames(
+  let classes = $derived(classnames(
     className,
     navbar ? 'navbar-nav' : 'nav',
     horizontal ? `justify-content-${horizontal}` : false,
@@ -103,9 +94,9 @@
       'nav-fill': fill,
       'nav-underline': underline
     }
-  );
+  ));
 </script>
 
-<ul {...$$restProps} class={classes} data-bs-theme={theme}>
-  <slot />
+<ul {...rest} class={classes} data-bs-theme={theme}>
+  {@render children?.()}
 </ul>

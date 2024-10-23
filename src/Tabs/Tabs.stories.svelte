@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   export const meta = {
     title: 'Stories/tabs',
     parameters: {},
@@ -11,32 +11,34 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { Icon, TabContent, TabPane } from '@sveltestrap/sveltestrap';
 
-  let status = 'alpha';
+  let status = $state('alpha');
 </script>
 
-<Template let:args>
-  <div class="tab-example">
-    <TabContent>
-      <TabPane class="pt-3" tabId="alpha" tab="Alpha" active>
-        <h2 class="text-content">Alpha</h2>
-        <img
-          alt="Alpha Flight"
-          src="https://upload.wikimedia.org/wikipedia/en/4/49/Alpha_Flight_cast_picture_%28John_Byrne_era%29.gif"
-        />
-      </TabPane>
-      <TabPane class="pt-3" tabId="bravo" tab="Bravo">
-        <h2 class="text-content">Bravo</h2>
-        <img
-          alt="Johnny Bravo"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Johnny_Bravo_series_logo.png/320px-Johnny_Bravo_series_logo.png"
-        />
-      </TabPane>
-      <TabPane class="pt-3" tabId="charlie" tab="Charlie">
-        <h2 class="text-content">Charlie</h2>
-        <img alt="Charlie Brown" src="https://upload.wikimedia.org/wikipedia/en/2/22/Charlie_Brown.png" />
-      </TabPane>
-    </TabContent>
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="tab-example">
+      <TabContent>
+        <TabPane class="pt-3" tabId="alpha" tab="Alpha" active>
+          <h2 class="text-content">Alpha</h2>
+          <img
+            alt="Alpha Flight"
+            src="https://upload.wikimedia.org/wikipedia/en/4/49/Alpha_Flight_cast_picture_%28John_Byrne_era%29.gif"
+          />
+        </TabPane>
+        <TabPane class="pt-3" tabId="bravo" tab="Bravo">
+          <h2 class="text-content">Bravo</h2>
+          <img
+            alt="Johnny Bravo"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Johnny_Bravo_series_logo.png/320px-Johnny_Bravo_series_logo.png"
+          />
+        </TabPane>
+        <TabPane class="pt-3" tabId="charlie" tab="Charlie">
+          <h2 class="text-content">Charlie</h2>
+          <img alt="Charlie Brown" src="https://upload.wikimedia.org/wikipedia/en/2/22/Charlie_Brown.png" />
+        </TabPane>
+      </TabContent>
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />
@@ -86,27 +88,33 @@
 <Story name="Slots">
   <TabContent>
     <TabPane class="pt-3" tabId="alpha" active>
-      <span slot="tab">
-        Alpha <Icon name="gear" />
-      </span>
+      {#snippet tab()}
+            <span >
+          Alpha <Icon name="gear" />
+        </span>
+          {/snippet}
       <img
         alt="Alpha Flight"
         src="https://upload.wikimedia.org/wikipedia/en/4/49/Alpha_Flight_cast_picture_%28John_Byrne_era%29.gif"
       />
     </TabPane>
     <TabPane class="pt-3" tabId="bravo">
-      <span slot="tab">
-        Bravo <Icon name="hand-thumbs-up" />
-      </span>
+      {#snippet tab()}
+            <span >
+          Bravo <Icon name="hand-thumbs-up" />
+        </span>
+          {/snippet}
       <img
         alt="Johnny Bravo"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Johnny_Bravo_series_logo.png/320px-Johnny_Bravo_series_logo.png"
       />
     </TabPane>
     <TabPane class="pt-3" tabId="charlie">
-      <span slot="tab">
-        Charlie <Icon name="alarm" />
-      </span>
+      {#snippet tab()}
+            <span >
+          Charlie <Icon name="alarm" />
+        </span>
+          {/snippet}
       <img alt="Charlie Brown" src="https://upload.wikimedia.org/wikipedia/en/2/22/Charlie_Brown.png" />
     </TabPane>
   </TabContent>

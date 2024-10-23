@@ -2,13 +2,17 @@
   import { classnames } from '../utils';
   import { Button } from '../Button';
 
-  let className = '';
-  export { className as class };
-  export let icon = null;
-  export let toggle = null;
-  export let closeAriaLabel = 'Close';
+  let {
+    class: klass = '',
+    icon = null,
+    toggle = null,
+    closeAriaLabel = 'Close',
+    children,
+    icon: iconSlot,
+    close: closeSlot
+  } = $props();
 
-  $: classes = classnames(className, 'toast-header');
+  $: classes = classnames(klass, 'toast-header');
 
   $: tagClassName = classnames('me-auto', { 'ms-2': icon !== null });
 </script>
@@ -27,14 +31,18 @@
       <rect fill="currentColor" width="100%" height="100%" />
     </svg>
   {:else}
-    <slot name="icon" />
+    {@render iconSlot?.()}
   {/if}
   <strong class={tagClassName}>
-    <slot />
+    {@render children?.()}
   </strong>
   {#if toggle}
-    <slot name="close">
-      <Button close on:click={toggle} aria-label={closeAriaLabel} />
-    </slot>
+    {@render closeSlot?.() || (
+      <Button
+        close
+        onclick={toggle}
+        aria-label={closeAriaLabel}
+      />
+    )}
   {/if}
 </div>

@@ -6,12 +6,19 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'btn-toolbar');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', children, ...rest } = $props();
+  
+
+  let classes = $derived(classnames(className, 'btn-toolbar'));
 </script>
 
-<div {...$$restProps} role="toolbar" class={classes}>
-  <slot />
+<div {...rest} role="toolbar" class={classes}>
+  {@render children?.()}
 </div>

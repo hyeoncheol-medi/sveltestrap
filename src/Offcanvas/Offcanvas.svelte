@@ -11,166 +11,87 @@
 
   const dispatch = createEventDispatcher();
 
-  /**
-   * Additional CSS class names to apply.
-   * @type {string}
-   */
-  let className = '';
-  export { className as class };
+  let {
+    class: className = '',
+    backdrop = true,
+    body = true,
+    container = 'body',
+    fade = true,
+    header = '',
+    isOpen = false,
+    keyboard = true,
+    placement = 'start',
+    scroll = false,
+    sm = false,
+    md = false,
+    lg = false,
+    xl = false,
+    xxl = false,
+    style = '',
+    theme = null,
+    toggle = undefined,
+    ...restProps
+  } = $props();
 
-  /**
-   * Controls whether the backdrop is displayed behind the offcanvas.
-   * @type {boolean}
-   */
-  export let backdrop = true;
+  let {
+    header: headerContent,
+    default: defaultContent
+  } = $props();
 
-  /**
-   * Controls whether the offcanvas body is displayed.
-   * @type {boolean}
-   */
-  export let body = true;
+  let bodyElement = $state(null);
+  let isTransitioning = $state(false);
+  let element = $state(null);
+  let removeEscListener = $state(null);
 
-  /**
-   * The container element where the offcanvas will be placed.
-   * @type {string}
-   */
-  export let container = 'body';
+  onMount(() => {
+    bodyElement = document.body;
+  });
 
-  /**
-   * Controls whether to use a fade animation when opening/closing the offcanvas.
-   * @type {boolean}
-   */
-  export let fade = true;
+  $effect(() => {
+    if (bodyElement && !scroll) {
+      bodyElement.classList.toggle('overflow-noscroll', isOpen || isTransitioning);
+    }
+  });
 
-  /**
-   * The header content of the offcanvas.
-   * @type {string}
-   */
-  export let header = '';
+  $effect(() => {
+    if (element) {
+      isOpen = isOpen;
+      isTransitioning = true;
 
-  /**
-   * Indicates whether the offcanvas is currently open.
-   * @type {boolean}
-   */
-  export let isOpen = false;
+      dispatch(isOpen ? 'opening' : 'closing');
 
-  /**
-   * Controls whether keyboard interaction is enabled for closing the offcanvas.
-   * @type {boolean}
-   */
-  export let keyboard = true;
+      setTimeout(() => {
+        isTransitioning = false;
+        dispatch(isOpen ? 'open' : 'close');
+      }, getTransitionDuration(element));
+    }
+  });
 
-  /**
-   * The placement of the offcanvas ('start', 'end', etc.).
-   * @type {string}
-   */
-  export let placement = 'start';
-
-  /**
-   * Controls whether to allow scrolling of the body when the offcanvas is open.
-   * @type {boolean}
-   */
-  export let scroll = false;
-
-  /**
-   * Controls the size of the offcanvas for small screens.
-   * @type {boolean}
-   */
-  export let sm = false;
-
-  /**
-   * Controls the size of the offcanvas for medium screens.
-   * @type {boolean}
-   */
-  export let md = false;
-
-  /**
-   * Controls the size of the offcanvas for large screens.
-   * @type {boolean}
-   */
-  export let lg = false;
-
-  /**
-   * Controls the size of the offcanvas for extra-large screens.
-   * @type {boolean}
-   */
-  export let xl = false;
-
-  /**
-   * Controls the size of the offcanvas for extra-extra-large screens.
-   * @type {boolean}
-   */
-  export let xxl = false;
-
-  /**
-   * Additional CSS styles to apply to the offcanvas.
-   * @type {string}
-   */
-  export let style = '';
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
-
-  /**
-   * Function to toggle the state of the offcanvas.
-   * @type {undefined|function}
-   */
-  export let toggle = undefined;
-
-  /**
-   * TODO: Support these like Modals:
-   * - autoFocus
-   * - unmountOnClose
-   * - focus trap
-   */
-  let bodyElement;
-  let isTransitioning = false;
-  let element;
-  let removeEscListener;
-
-  onMount(() => (bodyElement = document.body));
-
-  $: if (bodyElement && !scroll) {
-    bodyElement.classList.toggle('overflow-noscroll', isOpen || isTransitioning);
-  }
-
-  $: if (element) {
-    isOpen = isOpen;
-    isTransitioning = true;
-
-    dispatch(isOpen ? 'opening' : 'closing');
-
-    setTimeout(() => {
-      isTransitioning = false;
-      dispatch(isOpen ? 'open' : 'close');
-    }, getTransitionDuration(element));
-  }
-
-  $: if (isOpen && toggle && typeof window !== 'undefined') {
-    removeEscListener = browserEvent(document, 'keydown', (event) => {
-      if (event.key && event.key === 'Escape' && keyboard) {
-        toggle();
-      }
-    });
-  }
-
-  $: if (!isOpen && removeEscListener) {
-    removeEscListener();
-  }
-
-  $: handleMouseDown =
-    backdrop && toggle && bodyElement && isOpen
-      ? (e) => {
-          if (e.target === bodyElement) {
-            toggle();
-          }
+  $effect(() => {
+    if (isOpen && toggle && typeof window !== 'undefined') {
+      removeEscListener = browserEvent(document, 'keydown', (event) => {
+        if (event.key && event.key === 'Escape' && keyboard) {
+          toggle();
         }
-      : undefined;
+      });
+    }
+  });
 
-  $: classes = classnames(
+  $effect(() => {
+    if (!isOpen && removeEscListener) {
+      removeEscListener();
+    }
+  });
+
+  $derived handleMouseDown = backdrop && toggle && bodyElement && isOpen
+    ? (e) => {
+        if (e.target === bodyElement) {
+          toggle();
+        }
+      }
+    : undefined;
+
+  $derived classes = classnames(
     {
       offcanvas: !sm && !md && !lg && !xl && !xxl,
       'offcanvas-sm': sm,
@@ -184,14 +105,14 @@
     className
   );
 
-  $: outer = container === 'inline' ? InlineContainer : Portal;
+  $derived outer = container === 'inline' ? InlineContainer : Portal;
 </script>
 
-<svelte:body on:mousedown={handleMouseDown} />
+<svelte:body onmousedown={handleMouseDown} />
 
 <svelte:component this={outer}>
   <div
-    {...$$restProps}
+    {...restProps}
     bind:this={element}
     aria-hidden={!isOpen ? true : undefined}
     aria-modal={isOpen ? true : undefined}
@@ -201,24 +122,26 @@
     style={`visibility: ${isOpen || isTransitioning ? 'visible' : 'hidden'};${style}`}
     tabindex="-1"
   >
-    {#if toggle || header || $$slots.header}
+    {#if toggle || header || headerContent}
       <OffcanvasHeader {toggle}>
         {#if header}
           {header}
         {/if}
-        <slot name="header" />
+        {@render headerContent?.()}
       </OffcanvasHeader>
     {/if}
+
     {#if body}
       <OffcanvasBody>
-        <slot />
+        {@render defaultContent?.()}
       </OffcanvasBody>
     {:else}
-      <slot />
+      {@render defaultContent?.()}
     {/if}
   </div>
+
   {#if backdrop}
-    <OffcanvasBackdrop on:click={toggle || undefined} {fade} {isOpen} />
+    <OffcanvasBackdrop onclick={toggle || undefined} {fade} {isOpen} />
   {/if}
 </svelte:component>
 

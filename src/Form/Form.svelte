@@ -1,17 +1,33 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
-  let className = '';
-  export { className as class };
-  export let inline = false;
-  export let validated = false;
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [inline]
+   * @property {boolean} [validated]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, {
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    inline = false,
+    validated = false,
+    children,
+    ...rest
+  } = $props();
+
+  let classes = $derived(classnames(className, {
     'form-inline': inline,
     'was-validated': validated
-  });
+  }));
 </script>
 
-<form {...$$restProps} class={classes} on:submit>
-  <slot />
+<form {...rest} class={classes} onsubmit={bubble('submit')}>
+  {@render children?.()}
 </form>

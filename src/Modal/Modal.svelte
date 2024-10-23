@@ -1,11 +1,5 @@
-<script context="module">
-  // TODO fade option
-  let openCount = 0;
-</script>
-
 <script>
-  import { createEventDispatcher, onDestroy, onMount, afterUpdate } from 'svelte';
-
+  import { tick } from 'svelte';
   import { modalIn, modalOut } from '../transitions';
   import { InlineContainer } from '../InlineContainer';
   import { ModalBackdrop } from '../ModalBackdrop';
@@ -22,161 +16,68 @@
     uuid
   } from '../utils';
 
-  const dispatch = createEventDispatcher();
+  // Module context variables
+  let openCount = $state(0);
 
-  /**
-   * Additional CSS class names to apply
-   * @type {string}
-   */
+  let {
+    onOpen,
+    onClose,
+    onClosing,
+    onOpening,
+    autoFocus = true,
+    body = false,
+    centered = false,
+    container = undefined,
+    fullscreen = false,
+    header = undefined,
+    isOpen = false,
+    keyboard = true,
+    backdrop = true,
+    contentClassName = '',
+    fade = true,
+    labelledBy = header ? `modal-${uuid()}` : undefined,
+    modalClassName = '',
+    modalStyle = null,
+    returnFocusAfterClose = true,
+    scrollable = false,
+    size = '',
+    theme = null,
+    toggle = undefined,
+    unmountOnClose = true,
+    wrapClassName = ''
+  } = $props();
+
   let className = '';
   export { className as class };
 
-  // Prevents the modal from closing when the backdrop has been clicked.
   let staticModal = false;
-
-  /**
-   * Prevents the modal from closing when the backdrop has been clicked.
-   * @type {boolean}
-   */
   export { staticModal as static };
 
-  /**
-   * Automatically puts focus on the modal with it first opens.
-   * @type {boolean}
-   */
-  export let autoFocus = true;
+  // State variables
+  let hasOpened = $state(false);
+  let _isMounted = $state(false);
+  let _triggeringElement = $state(null);
+  let _originalBodyPadding = $state(null);
+  let _dialog = $state(null);
+  let _mouseDownElement = $state(null);
+  let _removeEscListener = $state(null);
 
-  /**
-   * Indicates whether the modal should include a body content.
-   * @type {boolean}
-   */
-  export let body = false;
+  // Computed values
+  $derived.dialogBaseClass = 'modal-dialog';
 
-  /**
-   * Auto-positioning of the modal to ensure its centered in the viewport.
-   * @type {boolean}
-   */
-  export let centered = false;
+  $derived.classes = classnames(dialogBaseClass, className, {
+    [`modal-${size}`]: size,
+    'modal-fullscreen': fullscreen === true,
+    [`modal-fullscreen-${fullscreen}-down`]: fullscreen && typeof fullscreen === 'string',
+    [`${dialogBaseClass}-centered`]: centered,
+    [`${dialogBaseClass}-scrollable`]: scrollable
+  });
 
-  /**
-   * Container element that the modal should be rendered.
-   * @type {HTMLElement | null | undefined}
-   */
-  export let container = undefined;
+  $derived.outer = container === 'inline' || staticModal ? InlineContainer : Portal;
 
-  /**
-   * Determines whether or no the modal is rendered in fullscreen mode.
-   * @type {boolean}
-   */
-  export let fullscreen = false;
 
-  /**
-   * Customize the modal header content.
-   * @type {string | undefined}
-   */
-  export let header = undefined;
-
-  /**
-   * Used to control the modal state
-   * @type {boolean}
-   */
-  export let isOpen = false;
-
-  /**
-   * Ccontrol whether the modal can be closed using the ESC key.
-   * @type {boolean}
-   */
-  export let keyboard = true;
-
-  /**
-   * Controls the visibility of the modal backdrop.
-   * @type {boolean}
-   */
-  export let backdrop = true;
-
-  /**
-   * Additional classes to be added to the modal body/content.
-   * @type {string}
-   */
-  export let contentClassName = '';
-
-  /**
-   * Control the fade effect when opening or closing the modal.
-   * @type {boolean}
-   */
-  export let fade = true;
-
-  /**
-   * `labelledBy` for accessibility, associating the modal with a header element.
-   * @type {string | undefined}
-   */
-  export let labelledBy = header ? `modal-${uuid()}` : undefined;
-
-  /**
-   * Additional classes to be added to the modal content.
-   * @type {string}
-   */
-  export let modalClassName = '';
-
-  /**
-   * Custom styling to apply to the modal.
-   * @type {string | null}
-   */
-  export let modalStyle = null;
-
-  /**
-   * Should focus should be returned to the triggering element after modal close.
-   * @type {boolean}
-   */
-  export let returnFocusAfterClose = true;
-
-  /**
-   * Determines if the modal content should be scrollable.
-   * @type {boolean}
-   */
-  export let scrollable = false;
-
-  /**
-   * Specify the size of the modal (e.g., 'sm', 'lg').
-   * @type {string}
-   */
-  export let size = '';
-
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
-
-  /**
-   * Callback to toggle the modal state.
-   * @type {Function | undefined}
-   */
-  export let toggle = undefined;
-
-  /**
-   * Determines whether the modal should be unmounted when closed.
-   * @type {boolean}
-   */
-  export let unmountOnClose = true;
-
-  /**
-   * Additional classes to be added to the modal wrapper.
-   * @type {string}
-   */
-  export let wrapClassName = '';
-
-  let hasOpened = false;
-  let _isMounted = false;
-  let _triggeringElement;
-  let _originalBodyPadding;
-  let _lastIsOpen = isOpen;
-  let _lastHasOpened = hasOpened;
-  let _dialog;
-  let _mouseDownElement;
-  let _removeEscListener;
-
-  onMount(() => {
+  // Mount 효과
+  $effect(() => {
     if (isOpen) {
       init();
       hasOpened = true;
@@ -185,27 +86,25 @@
     if (hasOpened && autoFocus) {
       setFocus();
     }
+
+    return () => {
+      destroy();
+      if (hasOpened) {
+        close();
+      }
+    };
   });
 
-  onDestroy(() => {
-    destroy();
-    if (hasOpened) {
-      close();
-    }
-  });
-
-  afterUpdate(() => {
-    if (isOpen && !_lastIsOpen) {
+  // isOpen과 hasOpened 변경 감지 효과
+  $effect(() => {
+    if (isOpen) {
       init();
       hasOpened = true;
     }
 
-    if (autoFocus && hasOpened && !_lastHasOpened) {
+    if (autoFocus && hasOpened) {
       setFocus();
     }
-
-    _lastIsOpen = isOpen;
-    _lastHasOpened = hasOpened;
   });
 
   function setFocus() {
@@ -273,7 +172,7 @@
   }
 
   function onModalOpened() {
-    dispatch('open');
+    onOpen?.();
     _removeEscListener = browserEvent(document, 'keydown', (event) => {
       if (event.key && event.key === 'Escape' && keyboard) {
         if (toggle && backdrop === true) {
@@ -285,14 +184,14 @@
   }
 
   function onModalClosing() {
-    dispatch('closing');
+    onClosing?.();
     if (_removeEscListener) {
       _removeEscListener();
     }
   }
 
   function onModalClosed() {
-    dispatch('close');
+    onClose?.();
     if (unmountOnClose) {
       destroy();
     }

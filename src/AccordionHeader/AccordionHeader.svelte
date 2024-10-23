@@ -1,4 +1,7 @@
 <script>
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { classnames } from '../utils';
 
   /**
@@ -6,14 +9,21 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  /**
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  $: classes = classnames(className, 'accordion-button');
+  /** @type {Props & { [key: string]: any }} */
+  let { class: className = '', children, ...rest } = $props();
+  
+
+  let classes = $derived(classnames(className, 'accordion-button'));
 </script>
 
-<h2 class="accordion-header" {...$$restProps}>
-  <button type="button" class={classes} on:click>
-    <slot />
+<h2 class="accordion-header" {...rest}>
+  <button type="button" class={classes} onclick={bubble('click')}>
+    {@render children?.()}
   </button>
 </h2>

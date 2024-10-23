@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Offcanvas from './Offcanvas.svelte';
 
   export const meta = {
@@ -131,11 +131,11 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { Button } from '@sveltestrap/sveltestrap';
 
-  let isOpen = false;
-  let status = 'Closed';
-  let endOpen = false;
-  let bottomOpen = false;
-  let topOpen = false;
+  let isOpen = $state(false);
+  let status = $state('Closed');
+  let endOpen = $state(false);
+  let bottomOpen = $state(false);
+  let topOpen = $state(false);
   const toggleEnd = () => (endOpen = !endOpen);
   const toggleBottom = () => (bottomOpen = !bottomOpen);
   const toggleTop = () => (topOpen = !topOpen);
@@ -152,13 +152,15 @@
 </Offcanvas>`;
 </script>
 
-<Story name="Basic" let:args source={basicSource}>
-  <Button color="primary capitalize" on:click={toggle}>Open {args.placement}</Button>
+<Story name="Basic"  source={basicSource}>
+  {#snippet children({ args })}
+    <Button color="primary capitalize" on:click={toggle}>Open {args.placement}</Button>
 
-  <Offcanvas {...args} {isOpen} {toggle}>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua.
-  </Offcanvas>
+    <Offcanvas {...args} {isOpen} {toggle}>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+      aliqua.
+    </Offcanvas>
+  {/snippet}
 </Story>
 
 <Story name="Backdrop">
@@ -216,9 +218,11 @@
   <Button color="primary" on:click={toggle}>Open</Button>
 
   <Offcanvas scroll {isOpen} {toggle}>
-    <h1 slot="header">
-      <i>Hello <b>World!</b></i>
-    </h1>
+    {#snippet header()}
+        <h1 >
+        <i>Hello <b>World!</b></i>
+      </h1>
+      {/snippet}
     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
     aliqua.
   </Offcanvas>
@@ -312,7 +316,7 @@
   <Button color="primary" on:click={() => (isOpen = true)}>Open</Button>
 
   <Offcanvas {isOpen} body={false} style="width: 150px" class="bg-danger">
-    <div on:click={() => (isOpen = false)}>
+    <div onclick={() => (isOpen = false)}>
       <img src="https://picsum.photos/150/1200" alt="Meaningless content" />
     </div>
   </Offcanvas>

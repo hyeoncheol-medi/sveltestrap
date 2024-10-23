@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Styles from './Styles.svelte';
 
   export const meta = {

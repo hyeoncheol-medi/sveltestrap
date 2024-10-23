@@ -1,4 +1,6 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { classnames } from '../utils';
 
   /**
@@ -6,28 +8,35 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Index of the active item.
-   * @type {number}
-   * @default 0
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {number} [activeIndex] - Index of the active item.
+   * @property {number} [itemIndex] - Index of the current item.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let activeIndex = 0;
 
-  /**
-   * Index of the current item.
-   * @type {number}
-   * @default 0
-   */
-  export let itemIndex = 0;
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    activeIndex = 0,
+    itemIndex = 0,
+    children,
+    ...rest
+  } = $props();
 
-  let classes = '';
+  let classes = $state('');
 
-  $: classes = classnames(className, 'carousel-item');
+  run(() => {
+    classes = classnames(className, 'carousel-item');
+  });
 </script>
 
-<div {...$$restProps} class="{classes} active" class:active={itemIndex === activeIndex}>
-  <slot />
+<div {...rest} class="{classes} active" class:active={itemIndex === activeIndex}>
+  {@render children?.()}
 </div>

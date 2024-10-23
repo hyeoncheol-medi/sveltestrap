@@ -1,49 +1,49 @@
 <script>
   import { classnames } from '../utils';
 
-  /**
-   * The ARIA label for the pagination.
-   * @type {string}
-   * @default 'pagination'
-   */
-  export let ariaLabel = 'pagination';
+  
 
   /**
    * Additional CSS class name for the component
    * @type {string}
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
+
+  
   /**
-   * The class name for the pagination list.
-   * @type {string}
-   * @default ''
+   * @typedef {Object} Props
+   * @property {string} [ariaLabel] - The ARIA label for the pagination.
+   * @property {string} [class]
+   * @property {string} [listClassName] - The class name for the pagination list.
+   * @property {string} [size] - The size of the pagination.
+   * @property {string | null} [theme] - The theme name override to apply to this component instance.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let listClassName = '';
 
-  /**
-   * The size of the pagination.
-   * @type {string}
-   * @default ''
-   */
-  export let size = '';
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    ariaLabel = 'pagination',
+    class: className = '',
+    listClassName = '',
+    size = '',
+    theme = null,
+    children,
+    ...rest
+  } = $props();
 
-  /**
-   * The theme name override to apply to this component instance.
-   * @type {string | null}
-   */
-  export let theme = null;
+  let classes = $derived(classnames(className));
 
-  $: classes = classnames(className);
-
-  $: listClasses = classnames(listClassName, 'pagination', {
+  let listClasses = $derived(classnames(listClassName, 'pagination', {
     [`pagination-${size}`]: !!size
-  });
+  }));
 </script>
 
-<nav {...$$restProps} class={classes} aria-label={ariaLabel} data-bs-theme={theme}>
+<nav {...rest} class={classes} aria-label={ariaLabel} data-bs-theme={theme}>
   <ul class={listClasses}>
-    <slot />
+    {@render children?.()}
   </ul>
 </nav>

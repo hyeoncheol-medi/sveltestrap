@@ -6,30 +6,35 @@
    * @type {string}
    * @default ''
    */
-  let className = '';
-  export { className as class };
+  
 
+  
+
+  
   /**
-   * Indicates whether the breadcrumb item is active (i.e., the current page).
-   * @type {boolean}
-   * @default false
+   * @typedef {Object} Props
+   * @property {string} [class]
+   * @property {boolean} [active] - Indicates whether the breadcrumb item is active (i.e., the current page).
+   * @property {string} [children] - The content to be displayed within the breadcrumb item.
+   * @property {import('svelte').Snippet} [children]
    */
-  export let active = false;
 
-  /**
-   * The content to be displayed within the breadcrumb item.
-   * @type {string}
-   * @default ''
-   */
-  export let children = '';
+  /** @type {Props & { [key: string]: any }} */
+  let {
+    class: className = '',
+    active = false,
+    children = '',
+    children,
+    ...rest
+  } = $props();
 
-  $: classes = classnames(className, active ? 'active' : false, 'breadcrumb-item');
+  let classes = $derived(classnames(className, active ? 'active' : false, 'breadcrumb-item'));
 </script>
 
-<li {...$$restProps} class={classes} aria-current={active ? 'page' : undefined}>
+<li {...rest} class={classes} aria-current={active ? 'page' : undefined}>
   {#if children}
     {children}
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </li>

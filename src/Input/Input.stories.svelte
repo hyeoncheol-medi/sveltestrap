@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   import Input from './Input.svelte';
 
   export const meta = {
@@ -194,11 +194,11 @@
   import { Story, Template } from '@storybook/addon-svelte-csf';
   import { FormGroup, FormText, Label } from '@sveltestrap/sveltestrap';
 
-  let changeValue = '';
-  let focused = false;
-  let inner = '';
-  let inputValue = '';
-  let radioGroup;
+  let changeValue = $state('');
+  let focused = $state(false);
+  let inner = $state('');
+  let inputValue = $state('');
+  let radioGroup = $state();
 
   const resize = () => {
     inner.style.height = 'auto';
@@ -214,10 +214,12 @@
   };
 </script>
 
-<Template let:args>
-  <div class="form-width">
-    <Input {...args} />
-  </div>
+<Template >
+  {#snippet children({ args })}
+    <div class="form-width">
+      <Input {...args} />
+    </div>
+  {/snippet}
 </Template>
 
 <Story name="Basic" />
